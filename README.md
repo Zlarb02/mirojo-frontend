@@ -21,14 +21,14 @@
 
 ### 🔧 Tech Stack
 
-- **Frontend**: ![Angular](https://img.shields.io/badge/Angular-17.1.1-red)
-- **Backend**: ![Java Spring Boot](https://img.shields.io/badge/Spring%20Boot-green)
-- **CI/CD**: ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-blue)
-- **Containerization**: ![Docker](https://img.shields.io/badge/Docker-blue)
-- **Database**: ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-blue)
-- **Testing**: ![Jest](https://img.shields.io/badge/Jest-purple)
-- **End-to-End Testing**: ![Cypress](https://img.shields.io/badge/Cypress-blue)
-- **Linting**: ![Biome](https://img.shields.io/badge/Biome-purple)
+![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![Java Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
+![Cypress](https://img.shields.io/badge/Cypress-17202C?style=for-the-badge&logo=cypress&logoColor=white)
+![Biome](https://img.shields.io/badge/Biome-007ACC?style=for-the-badge&logo=biome&logoColor=white)
 
 These technologies were chosen to ensure a robust and scalable foundation, making it easy to deploy updates and manage the application effectively.
 
@@ -76,14 +76,14 @@ For more detailed information on the Angular CLI, use `ng help` or visit the [An
 
 ### 🔧 Stack Technologique
 
-- **Frontend**: ![Angular](https://img.shields.io/badge/Angular-17.1.1-red)
-- **Backend**: ![Java Spring Boot](https://img.shields.io/badge/Spring%20Boot-green)
-- **CI/CD**: ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-blue)
-- **Containerisation**: ![Docker](https://img.shields.io/badge/Docker-blue)
-- **Database**: ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-blue)
-- **Testing**: ![Jest](https://img.shields.io/badge/Jest-purple)
-- **End-to-End Testing**: ![Cypress](https://img.shields.io/badge/Cypress-blue)
-- **Linting**: ![Biome](https://img.shields.io/badge/Biome-purple)
+![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![Java Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
+![Cypress](https://img.shields.io/badge/Cypress-17202C?style=for-the-badge&logo=cypress&logoColor=white)
+![Biome](https://img.shields.io/badge/Biome-007ACC?style=for-the-badge&logo=biome&logoColor=white)
 
 Ces technologies ont été choisies pour garantir une base robuste et évolutive, facilitant la gestion et le déploiement de l'application.
 
