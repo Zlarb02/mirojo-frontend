@@ -1,0 +1,9 @@
+.git
+.editorconfig
+/.vscode/*
+/node_modules
+/cypress
+/coverage
+/docs
+.gitignore
+*.zip
