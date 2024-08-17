@@ -3,7 +3,7 @@ name: Deploy Frontend to Docker
 on:
   push:
     branches:
-      - "dev"
+      - "main"
   workflow_dispatch:
 
 jobs:
