@@ -2,6 +2,9 @@ import { Component, OnInit, HostListener } from "@angular/core";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 @Component({
   selector: "app-three-scene",
@@ -18,6 +21,7 @@ export class ThreeSceneComponent implements OnInit {
   private dice!: any;
   private isAnimating = false;
   private controls!: OrbitControls;
+  private composer!: EffectComposer;
   private isDragging = false; // Suivi du clic de souris
   private previousMousePosition = { x: 0, y: 0 };
   private faceRotations: {
@@ -45,6 +49,10 @@ export class ThreeSceneComponent implements OnInit {
     20: { x: 1.62, y: 3.14, z: 0.0 },
   };
 
+  public diceResult: number | null = null;
+  public resultMessage: string = "";
+  cave: any;
+
   constructor() {}
 
   ngOnInit(): void {
@@ -64,8 +72,8 @@ export class ThreeSceneComponent implements OnInit {
         };
 
         const rotationSpeed = 0.005;
-        this.dice.rotation.y += deltaMove.x * rotationSpeed;
-        this.dice.rotation.x += deltaMove.y * rotationSpeed;
+        //this.dice.rotation.y += deltaMove.x * rotationSpeed;
+        //this.dice.rotation.x += deltaMove.y * rotationSpeed;
 
         this.previousMousePosition = { x: event.clientX, y: event.clientY };
 
@@ -92,38 +100,66 @@ export class ThreeSceneComponent implements OnInit {
 
     // Initialisation de la scène
     this.scene = new THREE.Scene();
+    this.scene.fog = new THREE.Fog(0x000000, 1, 10); // Brume noire avec des distances ajustées
+
+    // Charger la texture de skybox
+    const loader = new THREE.TextureLoader();
+    loader.load(
+      "assets/cave.jpg", // Chemin de la texture cave.jpg
+      (texture: any) => {
+        // Assurez-vous que la texture se répète correctement
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+
+        // Appliquer la texture en tant que fond
+        this.scene.background = texture;
+
+        // Ajuster la luminosité en appliquant une couleur de fond foncée (optionnel)
+        this.renderer.setClearColor(0x000000, 1); // Fond noir pour réduire la luminosité générale
+      },
+      undefined,
+      (error: any) => {
+        console.error(
+          "Erreur lors du chargement de la texture cave.jpg :",
+          error,
+        );
+      },
+    );
 
     // Lumière directionnelle
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3); // Réduction de l'intensité
     directionalLight.position.set(2, 2, 2);
+    directionalLight.castShadow = true;
     this.scene.add(directionalLight);
 
-    const pointLight = new THREE.PointLight(0xffa500, 1, 10); // Couleur chaude, intensité 1
-    pointLight.position.set(0, 2, 0); // Position au-dessus du dé
+    // Lumière ponctuelle
+    const pointLight = new THREE.PointLight(0xffa500, 0.8, 10); // Intensité réduite à 0.8
+    pointLight.position.set(0, 2, 0);
     pointLight.castShadow = true;
     this.scene.add(pointLight);
 
-    const spotLight = new THREE.SpotLight(0xff4500, 0.7, 15, Math.PI / 6);
+    // Lumière spot
+    const spotLight = new THREE.SpotLight(0xff4500, 0.5, 15, Math.PI / 6); // Intensité réduite à 0.5
     spotLight.position.set(2, 3, 2);
     spotLight.castShadow = true;
     this.scene.add(spotLight);
 
-    // Lumière ambiante pour éclairage global
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    // Lumière ambiante
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); // Réduction à 0.2
     this.scene.add(ambientLight);
-
-    // Pour la lumière directionnelle
-    directionalLight.castShadow = true;
 
     // Charger le modèle d20.gltf
     this.loadDiceModel();
+
+    this.loadCaveModel();
 
     // Texture procédurale de bois réaliste
     const woodTexture = this.createRealisticWoodTexture();
 
     // Plateau en bois
     const tabletopGeometry = new THREE.BoxGeometry(0.8, 0.05, 0.8);
-    const tabletopMaterial = new THREE.MeshBasicMaterial({ map: woodTexture });
+    const tabletopMaterial = new THREE.MeshStandardMaterial({
+      map: woodTexture,
+    });
     const tabletop = new THREE.Mesh(tabletopGeometry, tabletopMaterial);
     tabletop.position.y = -0.25;
     tabletop.castShadow = false;
@@ -132,7 +168,7 @@ export class ThreeSceneComponent implements OnInit {
 
     // Pieds de table
     const legGeometry = new THREE.BoxGeometry(0.05, 0.25, 0.05);
-    const legMaterial = new THREE.MeshBasicMaterial({ map: woodTexture });
+    const legMaterial = new THREE.MeshStandardMaterial({ map: woodTexture });
     const legPositions = [
       { x: -0.35, z: -0.35 },
       { x: 0.35, z: -0.35 },
@@ -147,10 +183,36 @@ export class ThreeSceneComponent implements OnInit {
       this.scene.add(leg);
     }
 
-    // Renderer
+    //renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setSize(width, height);
-    this.renderer.setAnimationLoop(this.animate.bind(this));
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.0; // Contrôle la luminosité
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    directionalLight.castShadow = true;
+    pointLight.castShadow = true;
+    spotLight.castShadow = true;
+
+    this.composer = new EffectComposer(this.renderer);
+    const composer = new EffectComposer(this.renderer);
+    const renderPass = new RenderPass(this.scene, this.camera);
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      1.5, // Intensité du bloom
+      0.4, // Rayon du bloom
+      0.85, // Seuil du bloom
+    );
+    composer.addPass(renderPass);
+    composer.addPass(bloomPass);
+
+    // Animation avec composer
+    this.renderer.setAnimationLoop(() => {
+      composer.render();
+    });
+
     const container = document.getElementById("scene-container");
     if (container) {
       container.appendChild(this.renderer.domElement);
@@ -160,10 +222,67 @@ export class ThreeSceneComponent implements OnInit {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Optionnel, ombres plus douces
 
-    //this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    //this.controls.enableDamping = true; // Pour des mouvements fluides
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls["enableDamping"] = true; // Pour des mouvements fluides
 
     this.handleResize();
+  }
+
+  /**
+   * Charge le modèle cave.gltf
+   */
+
+  private loadCaveModel(): void {
+    const loader: any = new GLTFLoader();
+
+    loader.load(
+      "assets/3d/cave/cave.gltf", // Chemin vers le modèle
+      (gltf: any) => {
+        this.cave = gltf.scene;
+
+        const boxHelper = new THREE.BoxHelper(this.cave, 0xffff00);
+        this.scene.add(boxHelper);
+        // Appliquer les textures à chaque matériau de la grotte
+        this.cave.traverse((child: any) => {
+          if (child.isMesh) {
+            // Création du matériau avec rendu double face
+            child.material = new THREE.MeshStandardMaterial({
+              side: THREE.DoubleSide, // Important : double face pour voir de l'intérieur
+              //textures
+              map: new THREE.TextureLoader().load(
+                "assets/3d/cave/textures/tiger_rock_diff_4k.jpg",
+              ),
+              normalMap: new THREE.TextureLoader().load(
+                "assets/3d/cave/textures/tiger_rock_nor_gl_4k.exr",
+              ),
+              roughnessMap: new THREE.TextureLoader().load(
+                "assets/3d/cave/textures/tiger_rock_rough_4k.exr",
+              ),
+            });
+
+            // Inverser les normales si nécessaire
+            child.geometry.computeVertexNormals(); // Recalcule les normales
+
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+
+        // Ajuster la taille et la position de la grotte
+        this.cave.scale.set(1.2, 1.2, 1.2); // Adapter selon vos besoins
+        this.cave.position.set(0, 0.81, 0);
+        this.cave.rotation.set(0, 4, 0);
+
+        // Ajouter la grotte à la scène
+        this.scene.add(this.cave);
+
+        console.log("Grotte ajoutée à la scène :", this.cave);
+      },
+      undefined,
+      (error: any) => {
+        console.error("Erreur lors du chargement du modèle de grotte :", error);
+      },
+    );
   }
 
   /**
@@ -172,24 +291,35 @@ export class ThreeSceneComponent implements OnInit {
   private loadDiceModel(): void {
     const loader: any = new GLTFLoader();
     loader.load(
-      "assets/d20.gltf", // Chemin vers votre modèle GLTF
+      "assets/3d/dice/d20.gltf", // Chemin vers votre modèle GLTF
       (gltf: any) => {
         this.dice = gltf.scene;
 
-        // Centrer et ajuster l'échelle du modèle
-        this.dice.position.set(0, -0.1, -0.3);
+        //centre de l'ecran bien visible
+        this.dice.position.set(0, 0, 0.8);
 
-        // Parcourir tous les enfants pour identifier les Mesh
+        // début du lancer de dé
+        this.dice.position.set(0, -0.188, 0.3);
+
+        //fin lancer de dé
+        this.dice.position.set(0, -0.188, 0);
+
         this.dice.traverse((child: any) => {
           if (child.isMesh) {
-            console.log("Mesh trouvé :", child);
+            if (child.material) {
+              child.material.metalness = 0.1; // Augmente l'effet de réflexion
+              child.material.roughness = 0.3; // Rend la surface lisse
 
-            // Assurez-vous que le matériau d'origine est utilisé
-            child.material = child.material || new THREE.MeshStandardMaterial();
+              // Ajoutez une émissivité
+              child.material.emissive = new THREE.Color(0xffff00);
+              child.material.emissiveIntensity = 0.01; // Ajustez l'intensité (0.2 est subtil)
+
+              child.material.needsUpdate = true; // Assurez-vous que les changements sont appliqués
+            }
           }
         });
 
-        this.dice.scale.set(0.003, 0.003, 0.003); // Réduire la taille du modèle
+        this.dice.scale.set(0.001, 0.001, 0.001); // Réduire la taille du modèle
 
         //const boxHelper = new THREE.BoxHelper(this.dice, 0xffff00);
         //this.scene.add(boxHelper);
@@ -205,17 +335,6 @@ export class ThreeSceneComponent implements OnInit {
         console.error("Erreur lors du chargement du modèle GLTF :", error);
       },
     );
-  }
-
-  /**
-   * Fonction d'animation de la scène
-   */
-  private animate(): void {
-    if (this.isAnimating && this.dice) {
-      this.dice.rotation.x += 0.1;
-      this.dice.rotation.y += 0.1;
-    }
-    this.renderer.render(this.scene, this.camera);
   }
 
   /**
@@ -321,42 +440,26 @@ export class ThreeSceneComponent implements OnInit {
         progress,
       );
 
-      // Ajout de la translation pour simuler le déplacement sur la table
-      this.dice.position.x = THREE.MathUtils.lerp(
-        startPosition.x,
-        endPosition.x,
-        progress,
-      );
-      this.dice.position.z = THREE.MathUtils.lerp(
-        startPosition.z,
-        endPosition.z,
-        progress,
-      );
-
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
         this.isAnimating = false;
-        console.log(`Face obtenue : ${randomFace}`);
+        this.diceResult = randomFace;
+        this.resultMessage =
+          randomFace >= 1 && randomFace <= 3
+            ? "Échec critique"
+            : randomFace >= 17 && randomFace <= 20
+              ? "Réussite critique"
+              : "";
       }
     };
+
     requestAnimationFrame(animate);
   }
 
   /**
    * Gère le redimensionnement de la fenêtre
    */
-  @HostListener("window:resize", ["$event"])
-  onWindowResize(): void {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.0; // Ajustez pour contrôler la luminosité
-  }
 
   private handleResize(): void {
     window.addEventListener("resize", () => {
