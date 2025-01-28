@@ -4,16 +4,8 @@
       "bufferView": 2,
       "componentType": 5126,
       "count": 5246,
-      "max": [
-        1.624959945678711,
-        4.969240188598633,
-        1.2211500406265259
-      ],
-      "min": [
-        -1.5992100238800049,
-        -3.1986799240112305,
-        -1.1923799514770508
-      ],
+      "max": [1.624959945678711, 4.969240188598633, 1.2211500406265259],
+      "min": [-1.5992100238800049, -3.1986799240112305, -1.1923799514770508],
       "type": "VEC3"
     },
     {
@@ -80,18 +72,16 @@
       "uri": "scene.bin"
     }
   ],
-  "extensionsUsed": [
-    "KHR_materials_specular"
-  ],
+  "extensionsUsed": ["KHR_materials_specular"],
   "images": [
     {
-      "uri": "textures/defaultMat_baseColor.png"
+      "uri": "textures/cave_baseColor.png"
     },
     {
-      "uri": "textures/defaultMat_metallicRoughness.png"
+      "uri": "textures/cave_metallicRoughness.png"
     },
     {
-      "uri": "textures/defaultMat_normal.png"
+      "uri": "textures/cave_normal.png"
     }
   ],
   "materials": [
@@ -99,11 +89,7 @@
       "doubleSided": true,
       "extensions": {
         "KHR_materials_specular": {
-          "specularColorFactor": [
-            1.0,
-            1.0,
-            1.0
-          ],
+          "specularColorFactor": [1.0, 1.0, 1.0],
           "specularFactor": 0.24228645268252244
         }
       },
@@ -142,33 +128,15 @@
   ],
   "nodes": [
     {
-      "children": [
-        1
-      ],
+      "children": [1],
       "matrix": [
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        2.220446049250313e-16,
-        -1.0,
-        0.0,
-        0.0,
-        1.0,
-        2.220446049250313e-16,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0
+        1.0, 0.0, 0.0, 0.0, 0.0, 2.220446049250313e-16, -1.0, 0.0, 0.0, 1.0,
+        2.220446049250313e-16, 0.0, 0.0, 0.0, 0.0, 1.0
       ],
       "name": "Sketchfab_model"
     },
     {
-      "children": [
-        2
-      ],
+      "children": [2],
       "name": "GRUTA_BASE.OBJ.cleaner.materialmerger.gles"
     },
     {
@@ -188,9 +156,7 @@
   "scenes": [
     {
       "name": "Sketchfab_Scene",
-      "nodes": [
-        0
-      ]
+      "nodes": [0]
     }
   ],
   "textures": [

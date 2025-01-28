@@ -1,11 +1,26 @@
-<div class="overlay">
-    <h1>{{ title }}</h1>
-    <p *ngIf="threeSceneComponent.diceResult !== null">
-        Résultat du dé : {{ threeSceneComponent.diceResult }}
-        <span *ngIf="threeSceneComponent.resultMessage">
-            - {{ threeSceneComponent.resultMessage }}
-        </span>
-    </p>
+<div
+  [ngClass]="{ 'fade-out': !showLoadingScreen, 'fade-in': showLoadingScreen }"
+  *ngIf="showLoadingScreen"
+>
+  <div class="overlay">
+    <br /><br /><br /><br />
+    <h1>MiRoJo.app</h1>
+    <h2>Mini Roleplay Journey</h2>
+    <p>Chargement...</p>
+  </div>
+  <app-loading-screen></app-loading-screen>
 </div>
-<button (click)="toggleView()">Controll view</button>
-<app-three-scene #threeSceneComponent></app-three-scene>
+<div class="afterLoad" *ngIf="!showLoadingScreen">
+  <div class="overlay">
+    <br /><br /><br /><br />
+    <h1>MiRoJo.app</h1>
+    <h2>Mini Roleplay Journey</h2>
+    <p *ngIf="threeSceneComponent.diceResult !== null">
+      Résultat du dé : {{ threeSceneComponent.diceResult }}
+      <span *ngIf="threeSceneComponent.resultMessage">
+        - {{ threeSceneComponent.resultMessage }}
+      </span>
+    </p>
+  </div>
+  <app-three-scene #threeSceneComponent></app-three-scene>
+</div>

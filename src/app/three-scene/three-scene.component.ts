@@ -1,12 +1,18 @@
-import { Component, OnInit, HostListener } from "@angular/core";
-import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import {
+  Component,
+  type OnInit,
+  HostListener,
+  Output,
+  EventEmitter,
+} from '@angular/core';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 @Component({
-  selector: "app-three-scene",
-  templateUrl: "./three-scene.component.html",
-  styleUrls: ["./three-scene.component.scss"],
+  selector: 'app-three-scene',
+  templateUrl: './three-scene.component.html',
+  styleUrls: ['./three-scene.component.scss'],
   standalone: true,
 })
 export class ThreeSceneComponent implements OnInit {
@@ -23,67 +29,67 @@ export class ThreeSceneComponent implements OnInit {
   private faceRotations: {
     [key: number]: { x: number; y: number; z: number };
   } = {
-    1: { x: -1.7, y: 18.18, z: 0.0 },
-    2: { x: 0.8, y: 13.68, z: 0.0 },
-    3: { x: -0.44, y: 17.4, z: 0.0 },
-    4: { x: 0.3, y: 15.03, z: 0.0 },
-    5: { x: -2.9, y: 10.87, z: 0.0 },
-    6: { x: 2.39, y: 6.34, z: 0.0 },
-    7: { x: -0.87, y: 19.19, z: 0.0 },
-    8: { x: 0.78, y: 17.89, z: 0.0 },
-    9: { x: 5.78, y: 9.75, z: 0.0 },
-    10: { x: -0.11, y: 11.98, z: 0.0 },
-    11: { x: -0.31, y: 9.11, z: 0.0 },
-    12: { x: 0.31, y: 13.05, z: 0.0 },
-    13: { x: 5.44, y: 14.68, z: 0.0 },
-    14: { x: 0.79, y: 9.38, z: 0.0 },
-    15: { x: 0.67, y: 20.09, z: 0.0 },
-    16: { x: 0.22, y: 10.98, z: 0.0 },
-    17: { x: -0.32, y: 11.9, z: 0.0 },
-    18: { x: 6.75, y: 14.23, z: 0.0 },
-    19: { x: -0.75, y: 4.22, z: 0.0 },
-    20: { x: 1.62, y: 3.14, z: 0.0 },
+    1: { x: -3.25, y: 17.83, z: 0.0 },
+    2: { x: 6.955, y: 29.42, z: 0.0 },
+    3: { x: 4.265, y: 11.065, z: 0.0 },
+    4: { x: 1.14, y: 5.695, z: 0.0 },
+    5: { x: -1.995, y: 20.335, z: 0.0 },
+    6: { x: 7.485, y: 25.675, z: 0.0 },
+    7: { x: -2.225, y: 12.635, z: 0.0 },
+    8: { x: -0.81, y: 17.7, z: 0.0 },
+    9: { x: -2.015, y: 15.795, z: 0.0 },
+    10: { x: -1.3, y: 18.36, z: 0.0 },
+    11: { x: -2.015, y: 15.215, z: 0.0 },
+    12: { x: 7.395, y: 28.655, z: 0.0 },
+    13: { x: -2.435, y: 14.61, z: 0.0 },
+    14: { x: 0.4, y: -0.005, z: 0.0 },
+    15: { x: -1.975, y: 19.42, z: 0.0 },
+    16: { x: -1.18, y: 17.125, z: 0.0 },
+    17: { x: -1.995, y: 18.19, z: 0.0 },
+    18: { x: -11.45, y: 23.7, z: 0.0 },
+    19: { x: -2.555, y: 16.735, z: 0.0 },
+    20: { x: -0.11, y: 15.73, z: 0.0 },
   };
 
   public diceResult: number | null = null;
-  public resultMessage: string = "";
+  public resultMessage = '';
   cave: any;
   private clock = new THREE.Clock();
   private defaultView = false;
 
-  constructor() {}
-
   ngOnInit(): void {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       this.initThreeJS();
     }
-    document.addEventListener("mousedown", (event) => {
+    document.addEventListener('mousedown', (event) => {
       this.isDragging = true;
       this.previousMousePosition = { x: event.clientX, y: event.clientY };
     });
 
-    document.addEventListener("mousemove", (event) => {
+    document.addEventListener('mousemove', (event) => {
       if (this.isDragging && this.dice) {
         const deltaMove = {
           x: event.clientX - this.previousMousePosition.x,
           y: event.clientY - this.previousMousePosition.y,
         };
 
+        /* DEBUG Rotation manuelle du dé pour ajuster les valeurs de faceRotations
+
         const rotationSpeed = 0.005;
-        //this.dice.rotation.y += deltaMove.x * rotationSpeed;
-        //this.dice.rotation.x += deltaMove.y * rotationSpeed;
+        this.dice.rotation.y += deltaMove.x * rotationSpeed;
+        this.dice.rotation.x += deltaMove.y * rotationSpeed;
 
         this.previousMousePosition = { x: event.clientX, y: event.clientY };
-
-        console.log("Rotation actuelle du dé :", {
-          x: this.dice.rotation.x.toFixed(2),
-          y: this.dice.rotation.y.toFixed(2),
-          z: this.dice.rotation.z.toFixed(2),
-        });
+        
+        console.log('Rotation actuelle du dé :', {
+          x: this.dice.rotation.x.toFixed(5),
+          y: this.dice.rotation.y.toFixed(5),
+          z: this.dice.rotation.z.toFixed(5),
+        }); */
       }
     });
 
-    document.addEventListener("mouseup", () => {
+    document.addEventListener('mouseup', () => {
       this.isDragging = false;
     });
     this.loadCaveModel();
@@ -105,7 +111,7 @@ export class ThreeSceneComponent implements OnInit {
     // Charger la texture de skybox
     const loader = new THREE.TextureLoader();
     loader.load(
-      "assets/cave.jpg", // Chemin de la texture cave.jpg
+      'assets/cave.jpg', // Chemin de la texture cave.jpg
       (texture: any) => {
         // Assurez-vous que la texture se répète correctement
         texture.mapping = THREE.EquirectangularReflectionMapping;
@@ -119,32 +125,32 @@ export class ThreeSceneComponent implements OnInit {
       undefined,
       (error: any) => {
         console.error(
-          "Erreur lors du chargement de la texture cave.jpg :",
-          error,
+          'Erreur lors du chargement de la texture cave.jpg :',
+          error
         );
-      },
+      }
     );
 
-    // Lumière directionnelle
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0); // Réduction de l'intensité
-    directionalLight.position.set(2, 1.5, 2);
-    directionalLight.castShadow = true;
-    this.scene.add(directionalLight);
-
     // Lumière ponctuelle
-    const pointLight = new THREE.PointLight(0xffa500, 0.8, 2); // Intensité réduite à 0.8
-    pointLight.position.set(0, 1.5, 0);
+    const pointLight = new THREE.PointLight(0xffa500, 0.9, 5); // Intensité réduite à 0.8
+    pointLight.position.set(0, 0.13, 0);
     pointLight.castShadow = true;
     this.scene.add(pointLight);
 
     // Lumière spot
-    const spotLight = new THREE.SpotLight(0xff4500, 0.5, 15, Math.PI / 6); // Intensité réduite à 0.5
-    spotLight.position.set(2, 1.5, 2);
+    const spotLight = new THREE.SpotLight(0xff4500, 2, 15, Math.PI / 8); // Intensité réduite à 0.5
+    spotLight.position.set(0, 1.8, 0);
+    spotLight.target.rotation.set(2, 2, 2);
     spotLight.castShadow = true;
     this.scene.add(spotLight);
 
+    //debug box
+    const pointLightHelper = new THREE.PointLightHelper(pointLight);
+    const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+    //this.scene.add(pointLightHelper, spotLightHelper);
+
     // Lumière ambiante
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); // Réduction à 0.2
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.15); // Réduction à 0.2
     this.scene.add(ambientLight);
 
     // Charger le modèle d20.gltf
@@ -152,13 +158,18 @@ export class ThreeSceneComponent implements OnInit {
 
     this.loadCaveModel();
 
-    // Texture procédurale de bois réaliste
-    const woodTexture = this.createRealisticWoodTexture();
-
     // Plateau en bois
     const tabletopGeometry = new THREE.BoxGeometry(0.8, 0.05, 0.8);
     const tabletopMaterial = new THREE.MeshStandardMaterial({
-      map: woodTexture,
+      map: new THREE.TextureLoader().load(
+        'assets/3d/table-wood/wood_table_worn_diff_4k.jpg'
+      ),
+      normalMap: new THREE.TextureLoader().load(
+        'wood_table_worn_nor_gl_4k.exr'
+      ),
+      roughnessMap: new THREE.TextureLoader().load(
+        'wood_table_worn_rough_4k.exr'
+      ),
     });
     const tabletop = new THREE.Mesh(tabletopGeometry, tabletopMaterial);
     tabletop.position.y = -0.25;
@@ -168,7 +179,17 @@ export class ThreeSceneComponent implements OnInit {
 
     // Pieds de table
     const legGeometry = new THREE.BoxGeometry(0.05, 0.25, 0.05);
-    const legMaterial = new THREE.MeshStandardMaterial({ map: woodTexture });
+    const legMaterial = new THREE.MeshStandardMaterial({
+      map: new THREE.TextureLoader().load(
+        'assets/3d/table-wood/wood_table_worn_diff_4k.jpg'
+      ),
+      normalMap: new THREE.TextureLoader().load(
+        'wood_table_worn_nor_gl_4k.exr'
+      ),
+      roughnessMap: new THREE.TextureLoader().load(
+        'wood_table_worn_rough_4k.exr'
+      ),
+    });
     const legPositions = [
       { x: -0.35, z: -0.35 },
       { x: 0.35, z: -0.35 },
@@ -183,6 +204,8 @@ export class ThreeSceneComponent implements OnInit {
       this.scene.add(leg);
     }
 
+    this.addCandle();
+
     //renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -192,21 +215,17 @@ export class ThreeSceneComponent implements OnInit {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    directionalLight.castShadow = true;
-    pointLight.castShadow = true;
-    spotLight.castShadow = true;
-
-    const container = document.getElementById("scene-container");
+    const container = document.getElementById('scene-container');
     if (container) {
       container.appendChild(this.renderer.domElement);
     } else {
-      console.error("Scene container not found");
+      console.error('Scene container not found');
     }
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Optionnel, ombres plus douces
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls["enableDamping"] = true; // Pour des mouvements fluides
+    this.controls['enableDamping'] = true; // Pour des mouvements fluides
 
     this.handleResize();
     this.toggleView();
@@ -220,7 +239,7 @@ export class ThreeSceneComponent implements OnInit {
     const loader: any = new GLTFLoader();
 
     loader.load(
-      "assets/3d/cave/cave.gltf", // Chemin vers le modèle
+      'assets/3d/cave/cave.gltf', // Chemin vers le modèle
       (gltf: any) => {
         this.cave = gltf.scene;
 
@@ -234,13 +253,13 @@ export class ThreeSceneComponent implements OnInit {
               side: THREE.DoubleSide, // Important : double face pour voir de l'intérieur
               //textures
               map: new THREE.TextureLoader().load(
-                "assets/3d/cave/textures/tiger_rock_diff_4k.jpg",
+                'assets/3d/cave/textures/tiger_rock_diff_4k.jpg'
               ),
               normalMap: new THREE.TextureLoader().load(
-                "assets/3d/cave/textures/tiger_rock_nor_gl_4k.exr",
+                'assets/3d/cave/textures/tiger_rock_nor_gl_4k.exr'
               ),
               roughnessMap: new THREE.TextureLoader().load(
-                "assets/3d/cave/textures/tiger_rock_rough_4k.exr",
+                'assets/3d/cave/textures/tiger_rock_rough_4k.exr'
               ),
             });
 
@@ -259,13 +278,11 @@ export class ThreeSceneComponent implements OnInit {
 
         // Ajouter la grotte à la scène
         this.scene.add(this.cave);
-
-        console.log("Grotte ajoutée à la scène :", this.cave);
       },
       undefined,
       (error: any) => {
-        console.error("Erreur lors du chargement du modèle de grotte :", error);
-      },
+        console.error('Erreur lors du chargement du modèle de grotte :', error);
+      }
     );
   }
 
@@ -275,7 +292,7 @@ export class ThreeSceneComponent implements OnInit {
   private loadDiceModel(): void {
     const loader: any = new GLTFLoader();
     loader.load(
-      "assets/3d/dice/d20.gltf", // Chemin vers votre modèle GLTF
+      'assets/3d/dice/d20.gltf', // Chemin vers votre modèle GLTF
       (gltf: any) => {
         this.dice = gltf.scene;
 
@@ -297,7 +314,7 @@ export class ThreeSceneComponent implements OnInit {
           }
         });
 
-        this.dice.scale.set(0.001, 0.001, 0.001); // Réduire la taille du modèle
+        this.dice.scale.set(0.0008, 0.0008, 0.0008); // Réduire la taille du modèle
 
         //const boxHelper = new THREE.BoxHelper(this.dice, 0xffff00);
         //this.scene.add(boxHelper);
@@ -306,57 +323,84 @@ export class ThreeSceneComponent implements OnInit {
 
         // Ajouter le modèle à la scène
         this.scene.add(this.dice);
-        console.log("Modèle ajouté à la scène :", this.dice);
       },
       undefined,
       (error: any) => {
-        console.error("Erreur lors du chargement du modèle GLTF :", error);
-      },
+        console.error('Erreur lors du chargement du modèle GLTF :', error);
+      }
     );
   }
 
-  /**
-   * Texture procédurale de bois
-   */
-  private createRealisticWoodTexture(): any {
-    const canvas = document.createElement("canvas");
-    const size = 512;
-    canvas.width = size;
-    canvas.height = size;
+  private addCandle(): void {
+    // Charger la texture du halo
+    const haloTexture = new THREE.TextureLoader().load(
+      'assets/3d/candle/halo.png'
+    );
 
-    const context = canvas.getContext("2d");
-    if (!context) {
-      throw new Error("Impossible de créer le contexte 2D pour le canvas");
-    }
+    // Matériau du halo
+    const haloMaterial = new THREE.SpriteMaterial({
+      map: haloTexture, // Texture du halo
+      color: 0xffaa33, // Couleur initiale
+      transparent: true, // Transparence activée
+      opacity: 0.5, // Opacité initiale
+    });
 
-    const gradient = context.createLinearGradient(0, 0, size, size);
-    gradient.addColorStop(0, "#deb887");
-    gradient.addColorStop(1, "#a0522d");
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, size, size);
+    // Sprite pour représenter le halo
+    const haloSprite = new THREE.Sprite(haloMaterial);
+    haloSprite.scale.set(0.5, 0.5, 1); // Taille initiale du halo
+    haloSprite.position.set(0, 0.2, 0); // Position au-dessus de la bougie
 
-    for (let i = 0; i < 100; i++) {
-      const x = Math.random() * size;
-      const y = Math.random() * size;
-      const width = Math.random() * 100 + 20;
-      const height = Math.random() * 5 + 2;
-      const rotation = Math.random() * Math.PI * 2;
+    // Cylindre pour représenter la bougie
+    const candleGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.2, 10);
+    const candleMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    const candleMesh = new THREE.Mesh(candleGeometry, candleMaterial);
 
-      context.save();
-      context.translate(x, y);
-      context.rotate(rotation);
-      context.fillStyle = `rgba(139, 69, 19, ${Math.random() * 0.3 + 0.1})`;
-      context.fillRect(-width / 2, -height / 2, width, height);
-      context.restore();
-    }
+    // Groupe pour rassembler la bougie et le halo
+    const candleGroup = new THREE.Group();
+    candleGroup.add(candleMesh, haloSprite); // Ajoute la bougie et le halo au groupe
+    candleGroup.position.set(0.3, -0.22, 0.3); // Position du groupe (sur la table)
+    candleGroup.scale.set(0.2, 0.2, 0.2); // Ajuste la taille de la bougie
 
-    return new THREE.CanvasTexture(canvas);
+    const candleGroup2 = candleGroup.clone();
+    candleGroup2.position.set(-0.3, -0.22, 0.3);
+
+    const candleGroup3 = candleGroup.clone();
+    candleGroup3.position.set(0.3, -0.22, -0.3);
+
+    const candleGroup4 = candleGroup.clone();
+    candleGroup4.position.set(-0.3, -0.22, -0.3);
+
+    this.scene.add(candleGroup, candleGroup2, candleGroup3, candleGroup4); // Ajoute le groupe à la scène
+
+    // Animation du halo (respiration et changement de couleur)
+    const clock = new THREE.Clock();
+    const animateHalo = () => {
+      const elapsedTime = clock.getElapsedTime();
+
+      // Effet de respiration (changement d'échelle)
+      const scale = 0.5 + Math.sin(elapsedTime * 4) * 0.05; // Oscille entre 0.45 et 0.55
+      haloSprite.scale.set(scale, scale, 1);
+
+      // Variation de l'opacité pour simuler des fluctuations lumineuses
+      haloMaterial.opacity = 0.5 + Math.sin(elapsedTime * 6) * 0.1; // Oscille entre 0.4 et 0.6
+
+      // Variation de la couleur pour simuler une flamme dynamique
+      haloMaterial.color.setHSL(
+        ((Math.sin(elapsedTime * 3) + 1) / 2) * 0.01, // Légère variation de teinte
+        0.7, // Saturation maximale
+        0.5 // Luminosité constante
+      );
+
+      // Continue l'animation
+      requestAnimationFrame(animateHalo);
+    };
+    animateHalo();
   }
 
   /**
    * Gestion des clics sur la scène
    */
-  @HostListener("click", ["$event"])
+  @HostListener('click', ['$event'])
   onClick(event: MouseEvent): void {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -373,6 +417,7 @@ export class ThreeSceneComponent implements OnInit {
    * Animation du dé
    */
   private rollDice(): void {
+    this.controls.enabled = true;
     const randomFace = Math.floor(Math.random() * 20) + 1; // Face finale aléatoire
     const targetRotation = this.faceRotations[randomFace];
 
@@ -393,12 +438,12 @@ export class ThreeSceneComponent implements OnInit {
     const cameraEndPosition = new THREE.Vector3(
       1.742198389711335e-9,
       0.2526036140961516,
-      2.52597606083769e-7,
+      2.52597606083769e-7
     );
     const cameraEndRotation = new THREE.Euler(
       -1.570795326818681,
       6.896965412846179e-9,
-      0.006897020093819907,
+      0.006897020093819907
     );
 
     const startTime = performance.now();
@@ -411,31 +456,31 @@ export class ThreeSceneComponent implements OnInit {
       // Interpolation de la position du dé
       this.dice.position.lerpVectors(startPosition, endPosition, progress);
 
-      // Interpolation de la position de la caméra
+      // Interpolation de la position de la caméra pour le mode dynamique
       this.camera.position.lerpVectors(
         cameraStartPosition,
         cameraEndPosition,
-        progress,
+        progress
       );
 
-      // Interpolation de la rotation de la caméra
-      this.camera.rotation.set(
-        THREE.MathUtils.lerp(
-          cameraStartRotation.x,
-          cameraEndRotation.x,
-          progress,
-        ),
-        THREE.MathUtils.lerp(
-          cameraStartRotation.y,
-          cameraEndRotation.y,
-          progress,
-        ),
-        THREE.MathUtils.lerp(
-          cameraStartRotation.z,
-          cameraEndRotation.z,
-          progress,
-        ),
-      );
+      // Interpolation de la rotation de la caméra pour le mode statique
+      // this.camera.rotation.set(
+      //   THREE.MathUtils.lerp(
+      //     cameraStartRotation.x,
+      //     cameraEndRotation.x,
+      //     progress
+      //   ),
+      //   THREE.MathUtils.lerp(
+      //     cameraStartRotation.y,
+      //     cameraEndRotation.y,
+      //     progress
+      //   ),
+      //   THREE.MathUtils.lerp(
+      //     cameraStartRotation.z,
+      //     cameraEndRotation.z,
+      //     progress
+      //   )
+      // );
 
       // Ajout d'une rotation dynamique pour simuler le roulement
       const randomSpinX = Math.PI * 4 * (1 - progress); // Réduction progressive du spin
@@ -444,17 +489,17 @@ export class ThreeSceneComponent implements OnInit {
       this.dice.rotation.x = THREE.MathUtils.lerp(
         startRotation.x,
         targetRotation.x + randomSpinX,
-        progress,
+        progress
       );
       this.dice.rotation.y = THREE.MathUtils.lerp(
         startRotation.y,
         targetRotation.y + randomSpinY,
-        progress,
+        progress
       );
       this.dice.rotation.z = THREE.MathUtils.lerp(
         startRotation.z,
         targetRotation.z,
-        progress,
+        progress
       );
 
       if (progress < 1) {
@@ -464,10 +509,10 @@ export class ThreeSceneComponent implements OnInit {
         this.diceResult = randomFace;
         this.resultMessage =
           randomFace >= 1 && randomFace <= 3
-            ? "Échec critique"
+            ? 'Échec critique'
             : randomFace >= 17 && randomFace <= 20
-              ? "Réussite critique"
-              : "";
+            ? 'Réussite critique'
+            : '';
       }
     };
 
@@ -479,7 +524,7 @@ export class ThreeSceneComponent implements OnInit {
    */
 
   private handleResize(): void {
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
       this.camera.aspect = width / height;

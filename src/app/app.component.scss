@@ -15,4 +15,51 @@
 
 h1 {
   pointer-events: auto; /* Permet de cliquer sur le titre */
+  background: linear-gradient(
+    to right,
+    #ff4d00,
+    #ffb700,
+    #ff6a00,
+    #ffb700,
+    #ff4d00
+  );
+  text-align: center;
+  background-size: 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: animate-gradient 14s linear infinite;
+}
+
+@keyframes animate-gradient {
+  0% {
+    background-position: 0%;
+    background-size: 200%;
+  }
+  50% {
+    background-position: 180%;
+    background-size: 800%;
+  }
+  100% {
+    background-position: 0%;
+    background-size: 200%;
+  }
+}
+
+.fade-in {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+.visible {
+  opacity: 1;
 }
