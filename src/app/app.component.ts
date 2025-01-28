@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { ThreeSceneComponent } from "./three-scene/three-scene.component";
 import { CommonModule } from "@angular/common";
@@ -8,8 +8,14 @@ import { CommonModule } from "@angular/common";
   standalone: true,
   imports: [RouterOutlet, ThreeSceneComponent, CommonModule],
   templateUrl: "./app.component.html",
-  styleUrl: "./app.component.scss",
+  styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
-  title = "mirojo.app - Mini Roleplay Journey";
+  title = "MirojoFrontend";
+
+  @ViewChild("threeSceneComponent") threeSceneComponent!: ThreeSceneComponent;
+
+  toggleView(): void {
+    this.threeSceneComponent.toggleView();
+  }
 }

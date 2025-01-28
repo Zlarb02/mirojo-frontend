@@ -2,9 +2,6 @@ import { Component, OnInit, HostListener } from "@angular/core";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 @Component({
   selector: "app-three-scene",
@@ -20,8 +17,7 @@ export class ThreeSceneComponent implements OnInit {
   private renderer!: any;
   private dice!: any;
   private isAnimating = false;
-  private controls!: OrbitControls;
-  private composer!: EffectComposer;
+  private controls!: any;
   private isDragging = false; // Suivi du clic de souris
   private previousMousePosition = { x: 0, y: 0 };
   private faceRotations: {
@@ -52,6 +48,8 @@ export class ThreeSceneComponent implements OnInit {
   public diceResult: number | null = null;
   public resultMessage: string = "";
   cave: any;
+  private clock = new THREE.Clock();
+  private defaultView = false;
 
   constructor() {}
 
@@ -88,6 +86,8 @@ export class ThreeSceneComponent implements OnInit {
     document.addEventListener("mouseup", () => {
       this.isDragging = false;
     });
+    this.loadCaveModel();
+    this.animate();
   }
 
   private initThreeJS(): void {
@@ -126,20 +126,20 @@ export class ThreeSceneComponent implements OnInit {
     );
 
     // Lumière directionnelle
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3); // Réduction de l'intensité
-    directionalLight.position.set(2, 2, 2);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0); // Réduction de l'intensité
+    directionalLight.position.set(2, 1.5, 2);
     directionalLight.castShadow = true;
     this.scene.add(directionalLight);
 
     // Lumière ponctuelle
-    const pointLight = new THREE.PointLight(0xffa500, 0.8, 10); // Intensité réduite à 0.8
-    pointLight.position.set(0, 2, 0);
+    const pointLight = new THREE.PointLight(0xffa500, 0.8, 2); // Intensité réduite à 0.8
+    pointLight.position.set(0, 1.5, 0);
     pointLight.castShadow = true;
     this.scene.add(pointLight);
 
     // Lumière spot
     const spotLight = new THREE.SpotLight(0xff4500, 0.5, 15, Math.PI / 6); // Intensité réduite à 0.5
-    spotLight.position.set(2, 3, 2);
+    spotLight.position.set(2, 1.5, 2);
     spotLight.castShadow = true;
     this.scene.add(spotLight);
 
@@ -196,23 +196,6 @@ export class ThreeSceneComponent implements OnInit {
     pointLight.castShadow = true;
     spotLight.castShadow = true;
 
-    this.composer = new EffectComposer(this.renderer);
-    const composer = new EffectComposer(this.renderer);
-    const renderPass = new RenderPass(this.scene, this.camera);
-    const bloomPass = new UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
-      1.5, // Intensité du bloom
-      0.4, // Rayon du bloom
-      0.85, // Seuil du bloom
-    );
-    composer.addPass(renderPass);
-    composer.addPass(bloomPass);
-
-    // Animation avec composer
-    this.renderer.setAnimationLoop(() => {
-      composer.render();
-    });
-
     const container = document.getElementById("scene-container");
     if (container) {
       container.appendChild(this.renderer.domElement);
@@ -226,6 +209,7 @@ export class ThreeSceneComponent implements OnInit {
     this.controls["enableDamping"] = true; // Pour des mouvements fluides
 
     this.handleResize();
+    this.toggleView();
   }
 
   /**
@@ -241,7 +225,7 @@ export class ThreeSceneComponent implements OnInit {
         this.cave = gltf.scene;
 
         const boxHelper = new THREE.BoxHelper(this.cave, 0xffff00);
-        this.scene.add(boxHelper);
+        //this.scene.add(boxHelper);
         // Appliquer les textures à chaque matériau de la grotte
         this.cave.traverse((child: any) => {
           if (child.isMesh) {
@@ -270,7 +254,7 @@ export class ThreeSceneComponent implements OnInit {
 
         // Ajuster la taille et la position de la grotte
         this.cave.scale.set(1.2, 1.2, 1.2); // Adapter selon vos besoins
-        this.cave.position.set(0, 0.81, 0);
+        this.cave.position.set(0.7, 0.81, 0.5);
         this.cave.rotation.set(0, 4, 0);
 
         // Ajouter la grotte à la scène
@@ -295,14 +279,8 @@ export class ThreeSceneComponent implements OnInit {
       (gltf: any) => {
         this.dice = gltf.scene;
 
-        //centre de l'ecran bien visible
+        //dé au centre de l'ecran bien visible
         this.dice.position.set(0, 0, 0.8);
-
-        // début du lancer de dé
-        this.dice.position.set(0, -0.188, 0.3);
-
-        //fin lancer de dé
-        this.dice.position.set(0, -0.188, 0);
 
         this.dice.traverse((child: any) => {
           if (child.isMesh) {
@@ -400,18 +378,28 @@ export class ThreeSceneComponent implements OnInit {
 
     if (!this.dice || this.isAnimating) return;
 
-    const animationDuration = 3000; // Durée totale de l'animation (ms)
+    const animationDuration = 2000; // Durée totale de l'animation (ms)
     const startRotation = {
       x: this.dice.rotation.x,
       y: this.dice.rotation.y,
       z: this.dice.rotation.z,
     };
-    const startPosition = { ...this.dice.position }; // Position de départ
-    const endPosition = {
-      x: (Math.random() - 0.5) * 0.4, // Translation aléatoire sur X
-      y: this.dice.position.y,
-      z: (Math.random() - 0.5) * 0.4, // Translation aléatoire sur Z
-    };
+    const startPosition = new THREE.Vector3(0, -0.188, 0.3); // Position de départ
+    const endPosition = new THREE.Vector3(0, -0.188, 0); // Position finale
+
+    // Position et rotation de la caméra
+    const cameraStartPosition = this.camera.position.clone();
+    const cameraStartRotation = this.camera.rotation.clone();
+    const cameraEndPosition = new THREE.Vector3(
+      1.742198389711335e-9,
+      0.2526036140961516,
+      2.52597606083769e-7,
+    );
+    const cameraEndRotation = new THREE.Euler(
+      -1.570795326818681,
+      6.896965412846179e-9,
+      0.006897020093819907,
+    );
 
     const startTime = performance.now();
     this.isAnimating = true;
@@ -419,6 +407,35 @@ export class ThreeSceneComponent implements OnInit {
     const animate = (time: number) => {
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
+
+      // Interpolation de la position du dé
+      this.dice.position.lerpVectors(startPosition, endPosition, progress);
+
+      // Interpolation de la position de la caméra
+      this.camera.position.lerpVectors(
+        cameraStartPosition,
+        cameraEndPosition,
+        progress,
+      );
+
+      // Interpolation de la rotation de la caméra
+      this.camera.rotation.set(
+        THREE.MathUtils.lerp(
+          cameraStartRotation.x,
+          cameraEndRotation.x,
+          progress,
+        ),
+        THREE.MathUtils.lerp(
+          cameraStartRotation.y,
+          cameraEndRotation.y,
+          progress,
+        ),
+        THREE.MathUtils.lerp(
+          cameraStartRotation.z,
+          cameraEndRotation.z,
+          progress,
+        ),
+      );
 
       // Ajout d'une rotation dynamique pour simuler le roulement
       const randomSpinX = Math.PI * 4 * (1 - progress); // Réduction progressive du spin
@@ -469,5 +486,61 @@ export class ThreeSceneComponent implements OnInit {
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(width, height);
     });
+  }
+
+  private animate(): void {
+    requestAnimationFrame(() => this.animate());
+
+    this.controls.update();
+    this.checkCollisions();
+
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  private checkCollisions(): void {
+    const direction = new THREE.Vector3();
+    this.camera.getWorldDirection(direction);
+
+    // Check collision in the forward direction
+    this.raycaster.set(this.camera.position, direction);
+    const intersectsForward = this.raycaster.intersectObject(this.cave, true);
+
+    if (intersectsForward.length > 0) {
+      const distance = intersectsForward[0].distance;
+      if (distance < 0.5) {
+        this.camera.position.add(direction.multiplyScalar(-0.1));
+      }
+    }
+
+    // Check collision in the backward direction
+    const backwardDirection = direction.clone().negate();
+    this.raycaster.set(this.camera.position, backwardDirection);
+    const intersectsBackward = this.raycaster.intersectObject(this.cave, true);
+
+    if (intersectsBackward.length > 0) {
+      const distance = intersectsBackward[0].distance;
+      if (distance < 0.5) {
+        this.camera.position.add(backwardDirection.multiplyScalar(-0.1));
+      }
+    }
+  }
+
+  toggleView(): void {
+    this.defaultView = !this.defaultView;
+    if (this.defaultView) {
+      this.controls.enabled = false;
+
+      this.camera.position.set(0, 0, 1); // Set to default position
+      this.camera.lookAt(new THREE.Vector3(0, 0, 0)); // Ensure the camera is looking at the center
+      this.controls.update();
+      if (this.dice != null) {
+        this.dice.position.set(0, 0, 0.8);
+      }
+    } else {
+      this.controls.enabled = true;
+
+      // début du lancer de dé
+      this.dice.position.set(0, -0.188, 0.3);
+    }
   }
 }
