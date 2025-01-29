@@ -4,14 +4,17 @@ FROM node:18 AS build-stage
 # Set the working directory
 WORKDIR /app
 
-# Copy all files to the working directory
+# Copier les fichiers package.json et pnpm-lock.yaml pour optimiser la mise en cache des dépendances
+COPY package.json pnpm-lock.yaml ./
+
+# Installer les dépendances avec pnpm
+RUN pnpm install --frozen-lockfile
+
+# Copier le reste du code source
 COPY . .
 
-# Install dependencies and build the application
-RUN npm install && \
-    npm run build && \
-    rm -rf /app/node_modules
-
+# Construire l'application
+RUN pnpm build
 # Use the official Nginx image for the production stage
 FROM nginx:stable
 
