@@ -30,6 +30,7 @@
     "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@angular/ssr": "^18.2.0",
+    "@supabase/supabase-js": "^2.48.1",
     "express": "^4.19.2",
     "gsap": "^3.12.7",
     "rxjs": "~7.8.1",

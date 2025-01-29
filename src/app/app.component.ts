@@ -1,41 +1,25 @@
-import { Component, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { ThreeSceneComponent } from './three-scene/three-scene.component';
-import { CommonModule } from '@angular/common';
-import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
+import { Component, OnInit } from "@angular/core";
+import { RouterOutlet } from "@angular/router";
+import { CommonModule } from "@angular/common";
+import { SupabaseService } from "./services/supabase.service";
+import { AccountComponent } from "./account/account.component";
+import { AuthComponent } from "./auth/auth.component";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   standalone: true,
-  imports: [
-    RouterOutlet,
-    LoadingScreenComponent,
-    ThreeSceneComponent,
-    CommonModule,
-  ],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  imports: [RouterOutlet, CommonModule, AccountComponent, AuthComponent],
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
 })
-export class AppComponent {
-  title = 'MirojoFrontend';
+export class AppComponent implements OnInit {
+  title = "MirojoFrontend";
 
-  showLoadingScreen = true;
-  viewToggled = false;
+  session = this.supabase.session;
+
+  constructor(private readonly supabase: SupabaseService) {}
 
   ngOnInit() {
-    setTimeout(() => {
-      this.showLoadingScreen = false;
-    }, 1000);
-  }
-
-  @ViewChild('threeSceneComponent') threeSceneComponent!: ThreeSceneComponent;
-
-  toggleView(): void {
-    this.threeSceneComponent.toggleView();
-    this.viewToggled = !this.viewToggled;
-  }
-
-  get buttonText() {
-    return this.viewToggled ? 'Reset static view' : 'Control view';
+    this.supabase.authChanges((_, session) => (this.session = session));
   }
 }

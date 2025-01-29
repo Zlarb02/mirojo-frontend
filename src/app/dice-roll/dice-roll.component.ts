@@ -4,18 +4,20 @@ import {
   HostListener,
   Output,
   EventEmitter,
-} from '@angular/core';
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+} from "@angular/core";
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-three-scene',
-  templateUrl: './three-scene.component.html',
-  styleUrls: ['./three-scene.component.scss'],
+  selector: "app-dice-roll",
+  imports: [CommonModule],
+  templateUrl: "./dice-roll.component.html",
+  styleUrls: ["./dice-roll.component.scss"],
   standalone: true,
 })
-export class ThreeSceneComponent implements OnInit {
+export class DiceRollComponent implements OnInit {
   private raycaster = new THREE.Raycaster();
   private mouse = new THREE.Vector2();
   private scene!: any;
@@ -52,21 +54,21 @@ export class ThreeSceneComponent implements OnInit {
   };
 
   public diceResult: number | null = null;
-  public resultMessage = '';
+  public resultMessage = "";
   cave: any;
   private clock = new THREE.Clock();
   private defaultView = false;
 
   ngOnInit(): void {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       this.initThreeJS();
     }
-    document.addEventListener('mousedown', (event) => {
+    document.addEventListener("mousedown", (event) => {
       this.isDragging = true;
       this.previousMousePosition = { x: event.clientX, y: event.clientY };
     });
 
-    document.addEventListener('mousemove', (event) => {
+    document.addEventListener("mousemove", (event) => {
       if (this.isDragging && this.dice) {
         const deltaMove = {
           x: event.clientX - this.previousMousePosition.x,
@@ -89,7 +91,7 @@ export class ThreeSceneComponent implements OnInit {
       }
     });
 
-    document.addEventListener('mouseup', () => {
+    document.addEventListener("mouseup", () => {
       this.isDragging = false;
     });
     this.loadCaveModel();
@@ -111,7 +113,7 @@ export class ThreeSceneComponent implements OnInit {
     // Charger la texture de skybox
     const loader = new THREE.TextureLoader();
     loader.load(
-      'assets/cave.jpg', // Chemin de la texture cave.jpg
+      "assets/cave.jpg", // Chemin de la texture cave.jpg
       (texture: any) => {
         // Assurez-vous que la texture se répète correctement
         texture.mapping = THREE.EquirectangularReflectionMapping;
@@ -125,10 +127,10 @@ export class ThreeSceneComponent implements OnInit {
       undefined,
       (error: any) => {
         console.error(
-          'Erreur lors du chargement de la texture cave.jpg :',
-          error
+          "Erreur lors du chargement de la texture cave.jpg :",
+          error,
         );
-      }
+      },
     );
 
     // Lumière ponctuelle
@@ -162,13 +164,13 @@ export class ThreeSceneComponent implements OnInit {
     const tabletopGeometry = new THREE.BoxGeometry(0.8, 0.05, 0.8);
     const tabletopMaterial = new THREE.MeshStandardMaterial({
       map: new THREE.TextureLoader().load(
-        'assets/3d/table-wood/wood_table_worn_diff_4k.jpg'
+        "assets/3d/table-wood/wood_table_worn_diff_4k.jpg",
       ),
       normalMap: new THREE.TextureLoader().load(
-        'wood_table_worn_nor_gl_4k.exr'
+        "wood_table_worn_nor_gl_4k.exr",
       ),
       roughnessMap: new THREE.TextureLoader().load(
-        'wood_table_worn_rough_4k.exr'
+        "wood_table_worn_rough_4k.exr",
       ),
     });
     const tabletop = new THREE.Mesh(tabletopGeometry, tabletopMaterial);
@@ -181,13 +183,13 @@ export class ThreeSceneComponent implements OnInit {
     const legGeometry = new THREE.BoxGeometry(0.05, 0.25, 0.05);
     const legMaterial = new THREE.MeshStandardMaterial({
       map: new THREE.TextureLoader().load(
-        'assets/3d/table-wood/wood_table_worn_diff_4k.jpg'
+        "assets/3d/table-wood/wood_table_worn_diff_4k.jpg",
       ),
       normalMap: new THREE.TextureLoader().load(
-        'wood_table_worn_nor_gl_4k.exr'
+        "wood_table_worn_nor_gl_4k.exr",
       ),
       roughnessMap: new THREE.TextureLoader().load(
-        'wood_table_worn_rough_4k.exr'
+        "wood_table_worn_rough_4k.exr",
       ),
     });
     const legPositions = [
@@ -215,20 +217,20 @@ export class ThreeSceneComponent implements OnInit {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    const container = document.getElementById('scene-container');
+    const container = document.getElementById("scene-container");
     if (container) {
       container.appendChild(this.renderer.domElement);
     } else {
-      console.error('Scene container not found');
+      console.error("Scene container not found");
     }
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Optionnel, ombres plus douces
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls['enableDamping'] = true; // Pour des mouvements fluides
+    this.controls["enableDamping"] = true; // Pour des mouvements fluides
 
     this.handleResize();
-    this.toggleView();
+    this.toggleControl();
   }
 
   /**
@@ -239,7 +241,7 @@ export class ThreeSceneComponent implements OnInit {
     const loader: any = new GLTFLoader();
 
     loader.load(
-      'assets/3d/cave/cave.gltf', // Chemin vers le modèle
+      "assets/3d/cave/cave.gltf", // Chemin vers le modèle
       (gltf: any) => {
         this.cave = gltf.scene;
 
@@ -253,13 +255,13 @@ export class ThreeSceneComponent implements OnInit {
               side: THREE.DoubleSide, // Important : double face pour voir de l'intérieur
               //textures
               map: new THREE.TextureLoader().load(
-                'assets/3d/cave/textures/tiger_rock_diff_4k.jpg'
+                "assets/3d/cave/textures/tiger_rock_diff_4k.jpg",
               ),
               normalMap: new THREE.TextureLoader().load(
-                'assets/3d/cave/textures/tiger_rock_nor_gl_4k.exr'
+                "assets/3d/cave/textures/tiger_rock_nor_gl_4k.exr",
               ),
               roughnessMap: new THREE.TextureLoader().load(
-                'assets/3d/cave/textures/tiger_rock_rough_4k.exr'
+                "assets/3d/cave/textures/tiger_rock_rough_4k.exr",
               ),
             });
 
@@ -281,8 +283,8 @@ export class ThreeSceneComponent implements OnInit {
       },
       undefined,
       (error: any) => {
-        console.error('Erreur lors du chargement du modèle de grotte :', error);
-      }
+        console.error("Erreur lors du chargement du modèle de grotte :", error);
+      },
     );
   }
 
@@ -292,7 +294,7 @@ export class ThreeSceneComponent implements OnInit {
   private loadDiceModel(): void {
     const loader: any = new GLTFLoader();
     loader.load(
-      'assets/3d/dice/d20.gltf', // Chemin vers votre modèle GLTF
+      "assets/3d/dice/d20.gltf", // Chemin vers votre modèle GLTF
       (gltf: any) => {
         this.dice = gltf.scene;
 
@@ -326,15 +328,15 @@ export class ThreeSceneComponent implements OnInit {
       },
       undefined,
       (error: any) => {
-        console.error('Erreur lors du chargement du modèle GLTF :', error);
-      }
+        console.error("Erreur lors du chargement du modèle GLTF :", error);
+      },
     );
   }
 
   private addCandle(): void {
     // Charger la texture du halo
     const haloTexture = new THREE.TextureLoader().load(
-      'assets/3d/candle/halo.png'
+      "assets/3d/candle/halo.png",
     );
 
     // Matériau du halo
@@ -388,7 +390,7 @@ export class ThreeSceneComponent implements OnInit {
       haloMaterial.color.setHSL(
         ((Math.sin(elapsedTime * 3) + 1) / 2) * 0.01, // Légère variation de teinte
         0.7, // Saturation maximale
-        0.5 // Luminosité constante
+        0.5, // Luminosité constante
       );
 
       // Continue l'animation
@@ -400,7 +402,7 @@ export class ThreeSceneComponent implements OnInit {
   /**
    * Gestion des clics sur la scène
    */
-  @HostListener('click', ['$event'])
+  @HostListener("click", ["$event"])
   onClick(event: MouseEvent): void {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -438,12 +440,12 @@ export class ThreeSceneComponent implements OnInit {
     const cameraEndPosition = new THREE.Vector3(
       1.742198389711335e-9,
       0.2526036140961516,
-      2.52597606083769e-7
+      2.52597606083769e-7,
     );
     const cameraEndRotation = new THREE.Euler(
       -1.570795326818681,
       6.896965412846179e-9,
-      0.006897020093819907
+      0.006897020093819907,
     );
 
     const startTime = performance.now();
@@ -460,7 +462,7 @@ export class ThreeSceneComponent implements OnInit {
       this.camera.position.lerpVectors(
         cameraStartPosition,
         cameraEndPosition,
-        progress
+        progress,
       );
 
       // Interpolation de la rotation de la caméra pour le mode statique
@@ -489,17 +491,17 @@ export class ThreeSceneComponent implements OnInit {
       this.dice.rotation.x = THREE.MathUtils.lerp(
         startRotation.x,
         targetRotation.x + randomSpinX,
-        progress
+        progress,
       );
       this.dice.rotation.y = THREE.MathUtils.lerp(
         startRotation.y,
         targetRotation.y + randomSpinY,
-        progress
+        progress,
       );
       this.dice.rotation.z = THREE.MathUtils.lerp(
         startRotation.z,
         targetRotation.z,
-        progress
+        progress,
       );
 
       if (progress < 1) {
@@ -509,10 +511,10 @@ export class ThreeSceneComponent implements OnInit {
         this.diceResult = randomFace;
         this.resultMessage =
           randomFace >= 1 && randomFace <= 3
-            ? 'Échec critique'
+            ? "Échec critique"
             : randomFace >= 17 && randomFace <= 20
-            ? 'Réussite critique'
-            : '';
+              ? "Réussite critique"
+              : "";
       }
     };
 
@@ -524,7 +526,7 @@ export class ThreeSceneComponent implements OnInit {
    */
 
   private handleResize(): void {
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
       this.camera.aspect = width / height;
@@ -570,7 +572,7 @@ export class ThreeSceneComponent implements OnInit {
     }
   }
 
-  toggleView(): void {
+  toggleControl(): void {
     this.defaultView = !this.defaultView;
     if (this.defaultView) {
       this.controls.enabled = false;

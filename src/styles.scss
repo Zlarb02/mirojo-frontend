@@ -7,24 +7,277 @@ body {
   overflow: scroll;
 }
 
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
+/* COLORS START */
 
-* {
+/* SCSS HEX */
+$black: #000000ff;
+$grape: #790fabff;
+$tiffany-blue: #7fd1d4ff;
+$neon-blue: #5862e9ff;
+$mindaro: #eaf27cff;
+
+/* SCSS HSL */
+$black: hsla(0, 0%, 0%, 1);
+$grape: hsla(281, 84%, 36%, 1);
+$tiffany-blue: hsla(182, 50%, 66%, 1);
+$neon-blue: hsla(236, 77%, 63%, 1);
+$mindaro: hsla(64, 82%, 72%, 1);
+
+/* SCSS RGB */
+$black: rgba(0, 0, 0, 1);
+$grape: rgba(121, 15, 171, 1);
+$tiffany-blue: rgba(127, 209, 212, 1);
+$neon-blue: rgba(88, 98, 233, 1);
+$mindaro: rgba(234, 242, 124, 1);
+
+/* SCSS Gradient */
+$gradient-top: linear-gradient(
+  0deg,
+  #000000ff,
+  #790fabff,
+  #7fd1d4ff,
+  #5862e9ff,
+  #eaf27cff
+);
+$gradient-right: linear-gradient(
+  90deg,
+  #000000ff,
+  #790fabff,
+  #7fd1d4ff,
+  #5862e9ff,
+  #eaf27cff
+);
+$gradient-bottom: linear-gradient(
+  180deg,
+  #000000ff,
+  #790fabff,
+  #7fd1d4ff,
+  #5862e9ff,
+  #eaf27cff
+);
+$gradient-left: linear-gradient(
+  270deg,
+  #000000ff,
+  #790fabff,
+  #7fd1d4ff,
+  #5862e9ff,
+  #eaf27cff
+);
+$gradient-top-right: linear-gradient(
+  45deg,
+  #000000ff,
+  #790fabff,
+  #7fd1d4ff,
+  #5862e9ff,
+  #eaf27cff
+);
+$gradient-bottom-right: linear-gradient(
+  135deg,
+  #000000ff,
+  #790fabff,
+  #7fd1d4ff,
+  #5862e9ff,
+  #eaf27cff
+);
+$gradient-top-left: linear-gradient(
+  225deg,
+  #000000ff,
+  #790fabff,
+  #7fd1d4ff,
+  #5862e9ff,
+  #eaf27cff
+);
+$gradient-bottom-left: linear-gradient(
+  315deg,
+  #000000ff,
+  #790fabff,
+  #7fd1d4ff,
+  #5862e9ff,
+  #eaf27cff
+);
+$gradient-radial: radial-gradient(
+  #000000ff,
+  #790fabff,
+  #7fd1d4ff,
+  #5862e9ff,
+  #eaf27cff
+);
+
+/* COLORS END */
+
+//only 400 weight disponible
+.font-lilita {
   font-family: "Lilita One", serif;
   font-weight: 400;
   font-style: normal;
+}
+
+// <weight>: Use a value from 100 to 900
+.font-raleway {
+  font-family: "Raleway", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+// <weight>: Use a value from 200 to 1000
+.font-mulish {
+  font-family: "Mulish", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  font-family: "Raleway", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  pointer-events: none; /* Permet de cliquer à travers l'overlay */
+  color: white;
+  overflow: hidden;
+}
+
+h1 {
+  pointer-events: auto; /* Permet de cliquer sur le titre */
+  background: linear-gradient(
+    to right,
+    #ff4d00,
+    #ffb700,
+    #ff6a00,
+    #ffb700,
+    #ff4d00
+  );
+  text-align: center;
+  background-size: 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: animate-gradient 14s linear infinite;
+
+  font-family: "Lilita One", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@keyframes animate-gradient {
+  0% {
+    background-position: 0%;
+    background-size: 200%;
+  }
+  50% {
+    background-position: 180%;
+    background-size: 800%;
+  }
+  100% {
+    background-position: 0%;
+    background-size: 200%;
+  }
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Mulish", serif;
+  font-optical-sizing: auto;
+  font-weight: 800;
+  font-style: normal;
+}
+
+.fade-in {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+.visible {
+  opacity: 1;
 }
 
 button {
   padding: 30px;
   font-weight: 100;
   font-size: 1.5em;
+  background-color: #ff4d00;
 }
 
 #app-root {
   width: 100%;
   height: 100%;
+}
+
+header {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  color: #ffffff;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 10px;
+  text-decoration: none;
+  color: #ffffff;
+  border-radius: 5px;
+  background-color: #ff4d00;
+}
+
+.btn:hover {
+  background-color: #ff6a00;
+  color: black;
+}
+
+footer {
+  margin-top: 20px;
+  padding: 10px;
+}
+
+input,
+button {
+  padding: 10px;
+  margin: 10px;
+  width: 90%;
+  max-width: 300px;
+}
+
+button {
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100vw;
 }
