@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { AuthService } from "../services/auth.service";
 import { FormsModule } from "@angular/forms";
 
 @Component({
@@ -12,8 +11,6 @@ import { FormsModule } from "@angular/forms";
 export class LoginComponent {
   email: string = "";
   password: string = "";
-
-  constructor(private authService: AuthService) {}
 
   signInWithGoogle() {
     console.log("Signing in with Google");

@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@supabase/supabase-js>@supabase/auth-js': 2.61.0
+
 importers:
 
   .:
@@ -1751,8 +1754,8 @@ packages:
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
-  '@supabase/auth-js@2.67.3':
-    resolution: {integrity: sha512-NJDaW8yXs49xMvWVOkSIr8j46jf+tYHV0wHhrwOaLLMZSFO4g6kKAf+MfzQ2RaD06OCUkUHIzctLAxjTgEVpzw==}
+  '@supabase/auth-js@2.61.0':
+    resolution: {integrity: sha512-ACHvg619Kunpxgx4bFq7qPyX1YEBl22Xxm6uucAVq5VS/UWC3ugq6H+J7m5Lv9XXLSpl+G9O9eNFX1sIyq3gRw==}
 
   '@supabase/functions-js@2.4.4':
     resolution: {integrity: sha512-WL2p6r4AXNGwop7iwvul2BvOtuJ1YQy8EbOd0dhG1oN1q8el/BIRSFCFnWAMM/vJJlHWLi4ad22sKbKr9mvjoA==}
@@ -7808,7 +7811,7 @@ snapshots:
   '@socket.io/component-emitter@3.1.2':
     optional: true
 
-  '@supabase/auth-js@2.67.3':
+  '@supabase/auth-js@2.61.0':
     dependencies:
       '@supabase/node-fetch': 2.6.15
 
@@ -7840,7 +7843,7 @@ snapshots:
 
   '@supabase/supabase-js@2.48.1':
     dependencies:
-      '@supabase/auth-js': 2.67.3
+      '@supabase/auth-js': 2.61.0
       '@supabase/functions-js': 2.4.4
       '@supabase/node-fetch': 2.6.15
       '@supabase/postgrest-js': 1.18.1
