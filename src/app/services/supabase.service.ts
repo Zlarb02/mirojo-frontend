@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   AuthChangeEvent,
   AuthSession,
@@ -6,8 +6,7 @@ import {
   Session,
   SupabaseClient,
   User,
-} from "@supabase/supabase-js";
-import { environment } from "../../environment/environment";
+} from '@supabase/supabase-js';
 
 export interface Profile {
   id?: string;
@@ -17,7 +16,7 @@ export interface Profile {
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class SupabaseService {
   private supabase: SupabaseClient;
@@ -25,8 +24,8 @@ export class SupabaseService {
 
   constructor() {
     this.supabase = createClient(
-      environment.SUPABASE_URL,
-      environment.SUPABASE_KEY,
+      'https://supasupa.mirojo.app',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzM3OTMyNDAwLAogICJleHAiOiAxODk1Njk4ODAwCn0.gleKpCo88nbAdYoByc5MjDpmoQa_mCrUZplMsnHWQT8'
     );
   }
 
@@ -39,14 +38,14 @@ export class SupabaseService {
 
   profile(user: User) {
     return this.supabase
-      .from("profiles")
+      .from('profiles')
       .select(`username, website, avatar_url`)
-      .eq("id", user.id)
+      .eq('id', user.id)
       .single();
   }
 
   authChanges(
-    callback: (event: AuthChangeEvent, session: Session | null) => void,
+    callback: (event: AuthChangeEvent, session: Session | null) => void
   ) {
     return this.supabase.auth.onAuthStateChange(callback);
   }
@@ -65,14 +64,14 @@ export class SupabaseService {
       updated_at: new Date(),
     };
 
-    return this.supabase.from("profiles").upsert(update);
+    return this.supabase.from('profiles').upsert(update);
   }
 
   downLoadImage(path: string) {
-    return this.supabase.storage.from("avatars").download(path);
+    return this.supabase.storage.from('avatars').download(path);
   }
 
   uploadAvatar(filePath: string, file: File) {
-    return this.supabase.storage.from("avatars").upload(filePath, file);
+    return this.supabase.storage.from('avatars').upload(filePath, file);
   }
 }
