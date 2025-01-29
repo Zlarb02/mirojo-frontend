@@ -30,7 +30,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/mirojo-frontend:latest
-          build-args: SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-            SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
