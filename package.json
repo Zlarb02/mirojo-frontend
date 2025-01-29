@@ -62,7 +62,7 @@
   },
   "overrides": {
     "@supabase/supabase-js": {
-      "@supabase/gotrue-js": "2.61.0"
+      "@supabase/auths-js": "2.61.0"
     }
   },
   "pnpm": {
