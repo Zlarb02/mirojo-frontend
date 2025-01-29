@@ -60,6 +60,11 @@
     "ts-node": "^10.9.2",
     "typescript": "~5.5.4"
   },
+  "overrides": {
+    "@supabase/supabase-js": {
+      "@supabase/gotrue-js": "2.61.0"
+    }
+  },
   "pnpm": {
     "overrides": {
       "@supabase/supabase-js>@supabase/auth-js": "2.61.0"
