@@ -1,10 +1,13 @@
-# Use the official Node.js image as the build stage
+# Utiliser l'image officielle de Node.js pour la phase de build
 FROM node:18 AS build-stage
 
-# Set the working directory
+# Installer pnpm globalement AVANT de l'utiliser
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers package.json et pnpm-lock.yaml pour optimiser la mise en cache des dépendances
+# Copier les fichiers package.json et pnpm-lock.yaml
 COPY package.json pnpm-lock.yaml ./
 
 # Installer les dépendances avec pnpm
@@ -15,17 +18,21 @@ COPY . .
 
 # Construire l'application
 RUN pnpm build
-# Use the official Nginx image for the production stage
+
+# Supprimer node_modules pour réduire la taille de l'image
+RUN rm -rf node_modules
+
+# Utiliser l'image officielle de Nginx pour la phase de production
 FROM nginx:stable
 
-# Copy built files from the build stage to Nginx HTML directory
+# Copier les fichiers construits depuis la phase de build vers Nginx
 COPY --from=build-stage /app/dist/mirojo-frontend/browser /usr/share/nginx/html
 
-# Copy Nginx configuration file
+# Copier le fichier de configuration Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
+# Exposer le port 80
 EXPOSE 80
 
-# Start Nginx
+# Lancer Nginx
 CMD ["nginx", "-g", "daemon off;"]
