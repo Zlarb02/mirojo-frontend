@@ -8,11 +8,12 @@ import {
   User,
 } from '@supabase/supabase-js';
 
-export interface Profile {
+interface Profile {
   id?: string;
-  username: string;
-  website: string;
-  avatar_url: string;
+  username?: string;
+  website?: string;
+  avatar_url?: string;
+  updated_at?: Date;
 }
 
 @Injectable({
@@ -21,6 +22,7 @@ export interface Profile {
 export class SupabaseService {
   private supabase: SupabaseClient;
   private _session = signal<AuthSession | null>(null); // Signal pour suivre la session
+  public isAuthInitialized = false; // Indique si l'auth est prête
 
   constructor() {
     this.supabase = createClient(
@@ -37,7 +39,7 @@ export class SupabaseService {
     // Vérifier si on arrive d'un lien magique
     await this.checkForMagicLink();
 
-    // Charger la session depuis Supabase
+    // Charger la session après l'authentification
     const { data } = await this.supabase.auth.getSession();
     this._session.set(data.session);
 
@@ -51,6 +53,9 @@ export class SupabaseService {
         console.log('❌ Utilisateur déconnecté.');
       }
     });
+
+    this.isAuthInitialized = true; // ✅ Indiquer que l'authentification est prête
+    console.log('✅ Authentification prête !');
   }
 
   private async checkForMagicLink() {
@@ -69,7 +74,7 @@ export class SupabaseService {
         const { data } = await this.supabase.auth.getSession();
         this._session.set(data.session);
 
-        // Nettoyer l'URL après échange du code pour éviter des problèmes de reload
+        // Nettoyer l'URL pour éviter un rechargement infini après échange du code
         window.history.replaceState(
           {},
           document.title,
@@ -86,8 +91,20 @@ export class SupabaseService {
     }
   }
 
+  async waitForAuthInit(): Promise<void> {
+    while (!this.isAuthInitialized) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+  }
+
   get session() {
-    return this._session(); // Utilisation du signal pour éviter les problèmes de synchro
+    if (!this.isAuthInitialized) {
+      console.warn(
+        "⚠️ La session est demandée avant l'initialisation de l'auth !"
+      );
+      return null;
+    }
+    return this._session();
   }
 
   profile(user: User) {
@@ -104,29 +121,24 @@ export class SupabaseService {
     return this.supabase.auth.onAuthStateChange(callback);
   }
 
-  // Connexion avec OTP (Email Magic Link)
+  // ✅ Connexion avec OTP (Email Magic Link)
   signIn(email: string) {
     return this.supabase.auth.signInWithOtp({ email });
   }
 
-  // Connexion avec un fournisseur OAuth (Google, GitHub, etc.)
+  // ✅ Connexion avec un fournisseur OAuth (Google, GitHub, etc.)
   async signInWithOAuth(provider: 'google' | 'github' | 'facebook') {
-    return this.supabase.auth.signInWithOAuth({
-      provider,
-    });
+    return this.supabase.auth.signInWithOAuth({ provider });
   }
 
-  // Connexion avec Email et Mot de passe
+  // ✅ Connexion avec Email et Mot de passe
   async signInWithPassword(email: string, password: string) {
-    return this.supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    return this.supabase.auth.signInWithPassword({ email, password });
   }
 
   async signOut() {
     await this.supabase.auth.signOut();
-    this._session.set(null); // Assurer la mise à jour du signal après déconnexion
+    this._session.set(null); // Met à jour l'état après la déconnexion
   }
 
   updateProfile(profile: Profile) {

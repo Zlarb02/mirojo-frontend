@@ -11,11 +11,27 @@ export const appConfig: ApplicationConfig = {
     {
       provide: 'APP_INITIALIZER',
       useFactory: () => {
-        return () => {
+        return async () => {
+          // ✅ Ajout de async pour permettre await
           const supabase = inject(SupabaseService);
           const router = inject(Router);
+
+          console.log(
+            "🔄 Attente de l'initialisation de l'authentification..."
+          );
+          await supabase.waitForAuthInit(); // ✅ Attendre que l'auth soit prête
+
+          console.log(
+            '🔄 Authentification initialisée. Vérification de la session...'
+          );
           if (supabase.session) {
-            router.navigate(['/profile']); //  Redirige si l'utilisateur est connecté
+            console.log('✅ Utilisateur connecté. Redirection vers /profile');
+            router.navigate(['/profile']); // ✅ Redirige si l'utilisateur est connecté
+          } else {
+            console.log(
+              '🔄 Aucun utilisateur connecté. Redirection vers /welcome'
+            );
+            router.navigate(['/welcome']);
           }
         };
       },
