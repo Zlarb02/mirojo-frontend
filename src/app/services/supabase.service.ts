@@ -28,15 +28,47 @@ export class SupabaseService {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzM3OTMyNDAwLAogICJleHAiOiAxODk1Njk4ODAwCn0.gleKpCo88nbAdYoByc5MjDpmoQa_mCrUZplMsnHWQT8'
     );
 
-    // Initialiser la session au chargement
-    this.supabase.auth.getSession().then(({ data }) => {
-      this._session.set(data.session);
-    });
+    this.initializeAuth();
+  }
 
-    // Écouter les changements de connexion
-    this.supabase.auth.onAuthStateChange((_, session) => {
+  private async initializeAuth() {
+    console.log("🔄 Initialisation de l'authentification...");
+
+    // Vérifier si on arrive d'un lien magique
+    await this.checkForMagicLink();
+
+    // Charger la session depuis Supabase
+    const { data } = await this.supabase.auth.getSession();
+    this._session.set(data.session);
+
+    // Écouter les changements d'état d'authentification
+    this.supabase.auth.onAuthStateChange((event, session) => {
       this._session.set(session);
+
+      if (event === 'SIGNED_IN') {
+        console.log('✅ Utilisateur connecté.');
+      } else if (event === 'SIGNED_OUT') {
+        console.log('❌ Utilisateur déconnecté.');
+      }
     });
+  }
+
+  private async checkForMagicLink() {
+    const { error } = await this.supabase.auth.exchangeCodeForSession(
+      window.location.href
+    );
+    if (!error) {
+      console.log('✅ Connexion via lien magique réussie.');
+
+      // Charger la session après l'échange du code
+      const { data } = await this.supabase.auth.getSession();
+      this._session.set(data.session);
+    } else {
+      console.error(
+        '⚠️ Erreur lors de la récupération de la session :',
+        error.message
+      );
+    }
   }
 
   get session() {
