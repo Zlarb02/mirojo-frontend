@@ -1,9 +1,8 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import {
   AuthChangeEvent,
   AuthSession,
   createClient,
-  Session,
   SupabaseClient,
   User,
 } from '@supabase/supabase-js';
@@ -21,134 +20,69 @@ interface Profile {
 })
 export class SupabaseService {
   private supabase: SupabaseClient;
-  private _session = signal<AuthSession | null>(null); // Signal pour suivre la session
-  public isAuthInitialized = false; // Indique si l'auth est prête
+  private _session = signal<AuthSession | null>(null);
 
   constructor() {
     this.supabase = createClient(
       'https://supasupa.mirojo.app',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzM3OTMyNDAwLAogICJleHAiOiAxODk1Njk4ODAwCn0.gleKpCo88nbAdYoByc5MjDpmoQa_mCrUZplMsnHWQT8'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzM3OTMyNDAwLAogICJleHAiOiAxODk1Njk4ODAwCn0.gleKpCo88nbAdYoByc5MjDpmoQa_mCrUZplMsnHWQT8',
+      { auth: { persistSession: true, autoRefreshToken: true } } // ✅ Sauvegarde la session dans localStorage
     );
 
     this.initializeAuth();
   }
 
   private async initializeAuth() {
-    console.log("🔄 Initialisation de l'authentification...");
-
-    // Vérifier si on arrive d'un lien magique
-    await this.checkForMagicLink();
-
-    // Charger la session après l'authentification
+    console.log('🔄 Vérification de la session existante...');
     const { data } = await this.supabase.auth.getSession();
+    console.log('🔍 Session trouvée au démarrage:', data.session);
     this._session.set(data.session);
 
-    // Écouter les changements d'état d'authentification
+    // ✅ Écoute les changements d'authentification
     this.supabase.auth.onAuthStateChange((event, session) => {
+      console.log(`🔄 Auth state changed: ${event}`);
       this._session.set(session);
-
-      if (event === 'SIGNED_IN') {
-        console.log('✅ Utilisateur connecté.');
-      } else if (event === 'SIGNED_OUT') {
-        console.log('❌ Utilisateur déconnecté.');
-      }
     });
-
-    this.isAuthInitialized = true; // ✅ Indiquer que l'authentification est prête
-    console.log('✅ Authentification prête !');
   }
 
-  private async checkForMagicLink() {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    console.log('🔍 URL après redirection :', window.location.href);
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-
-    console.log('🔍 Code détecté :', code);
-
-    if (code) {
-      console.log('🔄 Échange du code pour une session...');
-      const { data, error } = await this.supabase.auth.exchangeCodeForSession(
-        window.location.href
-      );
-      if (!error) {
-        console.log('✅ Connexion via lien magique réussie.');
-
-        // 🔥 Forcer la mise à jour de la session
-        const { data: sessionData } = await this.supabase.auth.getSession();
-        this._session.set(sessionData.session);
-
-        console.log('🛠 Nouvelle session détectée :', sessionData.session);
-
-        // Nettoyer l'URL après échange
-        window.history.replaceState(
-          {},
-          document.title,
-          window.location.pathname
-        );
-      } else {
-        console.error(
-          '⚠️ Erreur lors de la récupération de la session :',
-          error.message
-        );
-      }
-    } else {
-      console.log("⚠️ Aucun code de connexion trouvé dans l'URL.");
-    }
-  }
-
-  async waitForAuthInit(): Promise<void> {
-    while (!this.isAuthInitialized) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-  }
-
+  // 🔹 Getter pour récupérer la session actuelle
   get session() {
-    if (!this.isAuthInitialized) {
-      console.warn(
-        "⚠️ La session est demandée avant l'initialisation de l'auth !"
-      );
-      return null;
-    }
     return this._session();
   }
 
-  profile(user: User) {
-    return this.supabase
-      .from('profiles')
-      .select(`username, website, avatar_url`)
-      .eq('id', user.id)
-      .single();
-  }
+  // 🔹 `computed()` pour savoir si l'utilisateur est connecté
+  isLoggedIn = computed(() => !!this.session);
 
-  authChanges(
-    callback: (event: AuthChangeEvent, session: Session | null) => void
-  ) {
-    return this.supabase.auth.onAuthStateChange(callback);
-  }
-
-  // ✅ Connexion avec OTP (Email Magic Link)
-  signIn(email: string) {
-    return this.supabase.auth.signInWithOtp({ email });
-  }
-
-  // ✅ Connexion avec un fournisseur OAuth (Google, GitHub, etc.)
-  async signInWithOAuth(provider: 'google' | 'github' | 'facebook') {
-    return this.supabase.auth.signInWithOAuth({ provider });
-  }
-
-  // ✅ Connexion avec Email et Mot de passe
+  // 🔹 Connexion par email et mot de passe
   async signInWithPassword(email: string, password: string) {
     return this.supabase.auth.signInWithPassword({ email, password });
   }
 
-  async signOut() {
-    await this.supabase.auth.signOut();
-    this._session.set(null); // Met à jour l'état après la déconnexion
+  // 🔹 Connexion avec lien magique
+  async signInWithMagicLink(email: string) {
+    return this.supabase.auth.signInWithOtp({ email });
   }
 
+  // 🔹 Connexion avec OAuth (Google, GitHub, etc.)
+  async signInWithOAuth(provider: 'google' | 'github' | 'facebook') {
+    return this.supabase.auth.signInWithOAuth({ provider });
+  }
+
+  // 🔹 Inscription avec email et mot de passe
+  async signUp(email: string, password: string) {
+    return this.supabase.auth.signUp({
+      email,
+      password,
+    });
+  }
+
+  // 🔹 Déconnexion
+  async signOut() {
+    await this.supabase.auth.signOut();
+    this._session.set(null);
+  }
+
+  // 🔹 Mise à jour du profil utilisateur
   updateProfile(profile: Profile) {
     const update = {
       ...profile,
@@ -158,6 +92,7 @@ export class SupabaseService {
     return this.supabase.from('profiles').upsert(update);
   }
 
+  // 🔹 Gestion des avatars
   downLoadImage(path: string) {
     return this.supabase.storage.from('avatars').download(path);
   }

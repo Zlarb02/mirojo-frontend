@@ -12,21 +12,9 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     {
       provide: 'APP_INITIALIZER',
-      useFactory: () => {
-        return async () => {
-          console.log('🔄 Début de APP_INITIALIZER...');
-          const supabase = inject(SupabaseService);
-          const router = inject(Router);
-
-          console.log(
-            "🔄 Attente de l'initialisation de l'authentification..."
-          );
-          await new Promise((resolve) => setTimeout(resolve, 5000)); // ✅ Attendre 5000ms avant de router
-          await supabase.waitForAuthInit();
-
-          console.log(
-            '🔄 Authentification initialisée. Vérification de la session...'
-          );
+      useFactory: (supabase: SupabaseService, router: Router) => {
+        return () => {
+          console.log('🔄 Vérification de la session au chargement...');
           if (supabase.session) {
             console.log('✅ Utilisateur connecté. Redirection vers /profile');
             router.navigate(['/profile']);
@@ -38,6 +26,7 @@ export const appConfig: ApplicationConfig = {
           }
         };
       },
+      deps: [SupabaseService, Router],
       multi: true,
     },
   ],
