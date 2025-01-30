@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import {
   AuthChangeEvent,
   AuthSession,
@@ -20,20 +20,27 @@ export interface Profile {
 })
 export class SupabaseService {
   private supabase: SupabaseClient;
-  _session: AuthSession | null = null;
+  private _session = signal<AuthSession | null>(null); // Signal pour suivre la session
 
   constructor() {
     this.supabase = createClient(
       'https://supasupa.mirojo.app',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzM3OTMyNDAwLAogICJleHAiOiAxODk1Njk4ODAwCn0.gleKpCo88nbAdYoByc5MjDpmoQa_mCrUZplMsnHWQT8'
     );
+
+    // Initialiser la session au chargement
+    this.supabase.auth.getSession().then(({ data }) => {
+      this._session.set(data.session);
+    });
+
+    // Écouter les changements de connexion
+    this.supabase.auth.onAuthStateChange((_, session) => {
+      this._session.set(session);
+    });
   }
 
   get session() {
-    this.supabase.auth.getSession().then(({ data }) => {
-      this._session = data.session;
-    });
-    return this._session;
+    return this._session(); // Utilisation du signal pour éviter les problèmes de synchro
   }
 
   profile(user: User) {
@@ -50,12 +57,29 @@ export class SupabaseService {
     return this.supabase.auth.onAuthStateChange(callback);
   }
 
+  // Connexion avec OTP (Email Magic Link)
   signIn(email: string) {
     return this.supabase.auth.signInWithOtp({ email });
   }
 
-  signOut() {
-    return this.supabase.auth.signOut();
+  // Connexion avec un fournisseur OAuth (Google, GitHub, etc.)
+  async signInWithOAuth(provider: 'google' | 'github' | 'facebook') {
+    return this.supabase.auth.signInWithOAuth({
+      provider,
+    });
+  }
+
+  // Connexion avec Email et Mot de passe
+  async signInWithPassword(email: string, password: string) {
+    return this.supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+  }
+
+  async signOut() {
+    await this.supabase.auth.signOut();
+    this._session.set(null); // Assurer la mise à jour du signal après déconnexion
   }
 
   updateProfile(profile: Profile) {

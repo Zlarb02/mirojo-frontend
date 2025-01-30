@@ -1,10 +1,11 @@
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
+import { FooterComponent } from '../footer/footer.component';
 
 @Component({
-  selector: "app-welcome",
+  selector: 'app-welcome',
   standalone: true,
-  imports: [],
-  templateUrl: "./welcome.component.html",
-  styleUrl: "./welcome.component.scss",
+  imports: [FooterComponent],
+  templateUrl: './welcome.component.html',
+  styleUrl: './welcome.component.scss',
 })
 export class WelcomeComponent {}

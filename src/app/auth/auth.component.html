@@ -1,17 +1,80 @@
-<div class="row flex-center flex">
-    <div class="col-6 form-widget" aria-live="polite">
-        <h1 class="header">Sign-in</h1>
-        <p class="description">Sign in via magic link with your email below</p>
-        <form [formGroup]="signInForm" (ngSubmit)="onSubmit()" class="form-widget">
-            <div>
-                <label for="email">Email</label>
-                <input id="email" formControlName="email" class="inputField" type="email" placeholder="Your email" />
-            </div>
-            <div>
-                <button type="submit" class="button block" [disabled]="loading">
-                    {{ loading ? 'Loading' : 'Send magic link' }}
-                </button>
-            </div>
-        </form>
+<div class="welcome-container">
+  <header>
+    <h1>Connexion</h1>
+  </header>
+
+  <section class="login-form">
+    <!--  Connexion par Magic Link -->
+    <div class="auth-section">
+      <h2>Se connecter avec un lien magique</h2>
+      <form [formGroup]="signInForm" (ngSubmit)="signInWithMagicLink()">
+        <label for="magic-email">Email:</label>
+        <input
+          type="email"
+          id="magic-email"
+          formControlName="email"
+          required
+          placeholder="Enter your email"
+        />
+        <button
+          type="submit"
+          class="btn"
+          [disabled]="loading || signInForm.invalid"
+        >
+          {{ loading ? "Envoi en cours..." : "Envoyer un lien magique" }}
+        </button>
+      </form>
     </div>
+
+    <hr />
+
+    <!--  Connexion par Email/Mot de Passe -->
+    <div class="auth-section">
+      <h2>Se connecter avec un mot de passe</h2>
+      <form [formGroup]="loginForm" (ngSubmit)="loginWithEmail()">
+        <label for="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          required
+          placeholder="Enter your email"
+        />
+
+        <label for="password">Mot de passe:</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          required
+          placeholder="Enter your password"
+        />
+
+        <button
+          type="submit"
+          class="btn"
+          [disabled]="loading || loginForm.invalid"
+        >
+          {{ loading ? "Connexion..." : "Se connecter" }}
+        </button>
+      </form>
+    </div>
+
+    <hr />
+
+    <!--  Connexion avec Google -->
+    <div class="auth-providers">
+      <button
+        type="button"
+        class="btn google-btn"
+        (click)="signInWithGoogle()"
+        [disabled]="loading"
+      >
+        <img src="assets/google-logo.png" alt="Google Logo" />
+        Se connecter avec Google
+      </button>
+    </div>
+  </section>
+
+  <app-footer></app-footer>
 </div>
