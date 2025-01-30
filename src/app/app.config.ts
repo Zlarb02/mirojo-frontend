@@ -19,6 +19,7 @@ export const appConfig: ApplicationConfig = {
           console.log(
             "🔄 Attente de l'initialisation de l'authentification..."
           );
+
           await supabase.waitForAuthInit(); // ✅ Attendre que l'auth soit prête
 
           console.log(
@@ -31,6 +32,7 @@ export const appConfig: ApplicationConfig = {
             console.log(
               '🔄 Aucun utilisateur connecté. Redirection vers /welcome'
             );
+            await new Promise((resolve) => setTimeout(resolve, 5000)); // ✅ Attendre 500ms
             router.navigate(['/welcome']);
           }
         };
