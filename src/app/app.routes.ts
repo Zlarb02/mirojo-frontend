@@ -10,10 +10,15 @@ const authGuard: CanActivateFn = () => {
   const supabase = inject(SupabaseService);
   const router = inject(Router);
 
+  console.log('🔍 authGuard exécuté. Session =', supabase.session);
+
   if (!supabase.session) {
-    router.navigate(['/login']); // Redirige si non connecté
+    console.log('🔴 Redirection forcée vers /login');
+    router.navigate(['/login']);
     return false;
   }
+
+  console.log('✅ Accès autorisé !');
   return true;
 };
 
