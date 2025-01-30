@@ -54,20 +54,35 @@ export class SupabaseService {
   }
 
   private async checkForMagicLink() {
-    const { error } = await this.supabase.auth.exchangeCodeForSession(
-      window.location.href
-    );
-    if (!error) {
-      console.log('✅ Connexion via lien magique réussie.');
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
 
-      // Charger la session après l'échange du code
-      const { data } = await this.supabase.auth.getSession();
-      this._session.set(data.session);
-    } else {
-      console.error(
-        '⚠️ Erreur lors de la récupération de la session :',
-        error.message
+    if (code) {
+      console.log('🔄 Échange du code pour une session...');
+      const { error } = await this.supabase.auth.exchangeCodeForSession(
+        window.location.href
       );
+      if (!error) {
+        console.log('✅ Connexion via lien magique réussie.');
+
+        // Charger la session après l'échange du code
+        const { data } = await this.supabase.auth.getSession();
+        this._session.set(data.session);
+
+        // Nettoyer l'URL après échange du code pour éviter des problèmes de reload
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+      } else {
+        console.error(
+          '⚠️ Erreur lors de la récupération de la session :',
+          error.message
+        );
+      }
+    } else {
+      console.log("⚠️ Aucun code de connexion trouvé dans l'URL.");
     }
   }
 
