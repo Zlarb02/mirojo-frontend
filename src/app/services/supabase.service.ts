@@ -59,22 +59,30 @@ export class SupabaseService {
   }
 
   private async checkForMagicLink() {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    console.log('🔍 URL après redirection :', window.location.href);
+
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
 
+    console.log('🔍 Code détecté :', code);
+
     if (code) {
       console.log('🔄 Échange du code pour une session...');
-      const { error } = await this.supabase.auth.exchangeCodeForSession(
+      const { data, error } = await this.supabase.auth.exchangeCodeForSession(
         window.location.href
       );
       if (!error) {
         console.log('✅ Connexion via lien magique réussie.');
 
-        // Charger la session après l'échange du code
-        const { data } = await this.supabase.auth.getSession();
-        this._session.set(data.session);
+        // 🔥 Forcer la mise à jour de la session
+        const { data: sessionData } = await this.supabase.auth.getSession();
+        this._session.set(sessionData.session);
 
-        // Nettoyer l'URL pour éviter un rechargement infini après échange du code
+        console.log('🛠 Nouvelle session détectée :', sessionData.session);
+
+        // Nettoyer l'URL après échange
         window.history.replaceState(
           {},
           document.title,
