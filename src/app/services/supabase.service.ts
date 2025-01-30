@@ -26,7 +26,7 @@ export class SupabaseService {
     this.supabase = createClient(
       'https://supasupa.mirojo.app',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzM3OTMyNDAwLAogICJleHAiOiAxODk1Njk4ODAwCn0.gleKpCo88nbAdYoByc5MjDpmoQa_mCrUZplMsnHWQT8',
-      { auth: { persistSession: true, autoRefreshToken: true } } // ✅ Sauvegarde la session dans localStorage
+      { auth: { persistSession: true, autoRefreshToken: true } }
     );
 
     this.initializeAuth();
@@ -34,70 +34,87 @@ export class SupabaseService {
 
   private async initializeAuth() {
     console.log('🔄 Vérification de la session existante...');
-    const { data } = await this.supabase.auth.getSession();
-    console.log('🔍 Session trouvée au démarrage:', data.session);
-    this._session.set(data.session);
+    const { data, error } = await this.supabase.auth.getSession();
+    if (error) {
+      console.error('❌ Erreur lors de la récupération de la session :', error);
+    } else {
+      console.log('🔍 Session trouvée au démarrage:', data.session);
+      this._session.set(data.session);
+    }
 
-    // ✅ Écoute les changements d'authentification
     this.supabase.auth.onAuthStateChange((event, session) => {
       console.log(`🔄 Auth state changed: ${event}`);
       this._session.set(session);
     });
   }
 
-  // 🔹 Getter pour récupérer la session actuelle
   get session() {
     return this._session();
   }
 
-  // 🔹 `computed()` pour savoir si l'utilisateur est connecté
   isLoggedIn = computed(() => !!this.session);
 
-  // 🔹 Connexion par email et mot de passe
   async signInWithPassword(email: string, password: string) {
-    return this.supabase.auth.signInWithPassword({ email, password });
-  }
-
-  // 🔹 Connexion avec lien magique
-  async signInWithMagicLink(email: string) {
-    return this.supabase.auth.signInWithOtp({ email });
-  }
-
-  // 🔹 Connexion avec OAuth (Google, GitHub, etc.)
-  async signInWithOAuth(provider: 'google' | 'github' | 'facebook') {
-    return this.supabase.auth.signInWithOAuth({ provider });
-  }
-
-  // 🔹 Inscription avec email et mot de passe
-  async signUp(email: string, password: string) {
-    return this.supabase.auth.signUp({
+    const { data, error } = await this.supabase.auth.signInWithPassword({
       email,
       password,
     });
+    return { data, error };
   }
 
-  // 🔹 Déconnexion
+  async signInWithMagicLink(email: string) {
+    const { error } = await this.supabase.auth.signInWithOtp({ email });
+    return { error };
+  }
+
+  async signInWithOAuth(provider: 'google' | 'github' | 'facebook') {
+    const { data, error } = await this.supabase.auth.signInWithOAuth({
+      provider,
+    });
+    return { data, error };
+  }
+
+  async signUp(email: string, password: string) {
+    const { data, error } = await this.supabase.auth.signUp({
+      email,
+      password,
+    });
+    return { data, error };
+  }
+
   async signOut() {
-    await this.supabase.auth.signOut();
-    this._session.set(null);
+    const { error } = await this.supabase.auth.signOut();
+    if (!error) this._session.set(null);
+    return { error };
   }
 
-  // 🔹 Mise à jour du profil utilisateur
-  updateProfile(profile: Profile) {
-    const update = {
-      ...profile,
-      updated_at: new Date(),
-    };
+  async profile(user: User) {
+    const { data, error } = await this.supabase
+      .from('profiles')
+      .select(`username, website, avatar_url`)
+      .eq('id', user.id)
+      .single();
 
-    return this.supabase.from('profiles').upsert(update);
+    return { data, error };
   }
 
-  // 🔹 Gestion des avatars
-  downLoadImage(path: string) {
-    return this.supabase.storage.from('avatars').download(path);
+  async updateProfile(profile: Profile) {
+    const update = { ...profile, updated_at: new Date() };
+    const { data, error } = await this.supabase.from('profiles').upsert(update);
+    return { data, error };
   }
 
-  uploadAvatar(filePath: string, file: File) {
-    return this.supabase.storage.from('avatars').upload(filePath, file);
+  async downLoadImage(path: string) {
+    const { data, error } = await this.supabase.storage
+      .from('avatars')
+      .download(path);
+    return { data, error };
+  }
+
+  async uploadAvatar(filePath: string, file: File) {
+    const { data, error } = await this.supabase.storage
+      .from('avatars')
+      .upload(filePath, file);
+    return { data, error };
   }
 }
