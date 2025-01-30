@@ -21,7 +21,7 @@ export const appConfig: ApplicationConfig = {
           console.log(
             "🔄 Attente de l'initialisation de l'authentification..."
           );
-          await new Promise((resolve) => setTimeout(resolve, 500)); // ✅ Attendre 500ms avant de router
+          await new Promise((resolve) => setTimeout(resolve, 5000)); // ✅ Attendre 5000ms avant de router
           await supabase.waitForAuthInit();
 
           console.log(

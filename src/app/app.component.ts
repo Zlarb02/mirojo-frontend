@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SupabaseService } from './services/supabase.service';
 
@@ -15,7 +15,21 @@ export class AppComponent implements OnInit {
 
   session = this.supabase.session;
 
-  constructor(private readonly supabase: SupabaseService) {}
+  constructor(
+    private readonly router: Router,
+    private readonly supabase: SupabaseService // ✅ Injection du service Supabase
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        console.log(`⏳ Attente avant la redirection vers ${event.url}...`);
+
+        // ⏳ Bloquer la navigation pendant 5 secondes avant de continuer
+        setTimeout(() => {
+          console.log(`✅ Redirection appliquée : ${event.url}`);
+        }, 5000);
+      }
+    });
+  }
 
   ngOnInit() {
     this.supabase.authChanges((_, session) => (this.session = session));
