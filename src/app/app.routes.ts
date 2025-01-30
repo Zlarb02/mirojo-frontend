@@ -6,9 +6,11 @@ import { DiceRollComponent } from './dice-roll/dice-roll.component';
 import { AuthComponent } from './auth/auth.component';
 import { SupabaseService } from './services/supabase.service';
 
-const authGuard: CanActivateFn = () => {
+const authGuard: CanActivateFn = async () => {
   const supabase = inject(SupabaseService);
   const router = inject(Router);
+
+  await supabase.waitForAuthInit();
 
   console.log('🔍 authGuard exécuté. Session =', supabase.session);
 
