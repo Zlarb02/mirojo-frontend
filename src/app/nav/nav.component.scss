@@ -1,0 +1,75 @@
+@import "../../styles.scss";
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1200px;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.08); // Légère transparence
+  backdrop-filter: blur(12px); // Effet de flou pour le glassmorphisme
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2); // Bordure subtile
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+  transition: color 0.3s ease;
+  margin: 0 10px;
+}
+
+.navbar a:hover {
+  color: $neon-blue; // Effet au survol inspiré de ta palette
+}
+
+.navbar .btn {
+  padding: 8px 16px;
+  background: $neon-blue;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navbar .btn:hover {
+  background: lighten($neon-blue, 10%);
+  color: black;
+}
+
+.navbar .user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: white;
+  font-weight: 500;
+}
+
+.navbar .user-info span {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navbar .user-info span:hover {
+  color: $tiffany-blue;
+}
+
+.navbar .toggle-btn {
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: rotate(90deg);
+  }
+}

@@ -1,58 +1,15 @@
-<header>
-  <h1>Votre Profil</h1>
-</header>
-
-<div *ngIf="loading">Chargement...</div>
-
-<div *ngIf="user && !loading">
-  <h2>Bienvenue, {{ user.email }}</h2>
-
-  <app-avatar
-    [avatarUrl]="avatarUrl"
-    (upload)="updateAvatar($event)"
-  ></app-avatar>
+<div class="colored-container">
+  <app-nav></app-nav>
+  <header>
+    <h1>Votre Profil</h1>
+  </header>
 
   <p>
-    <strong>Nom d'utilisateur :</strong> {{ user.username || "Non défini" }}
-  </p>
-  <p>
-    <strong>Site web :</strong>
-    <a [href]="user.website" target="_blank">{{ user.website }}</a>
+    <strong>Nom d'utilisateur :</strong>
+    {{ authService.currentUser()?.username || "Non défini" }}
   </p>
 
-  <button (click)="signOut()">Se déconnecter</button>
+  <button (click)="logout()">Se déconnecter</button>
+
+  <app-footer></app-footer>
 </div>
-
-<!-- Ajout du formulaire de mise à jour du profil -->
-<section class="profile-edit">
-  <h2>Modifier votre profil</h2>
-  <form [formGroup]="updateProfileForm" (ngSubmit)="updateProfile()">
-    <label for="username">Nom d'utilisateur :</label>
-    <input formControlName="username" id="username" type="text" required />
-
-    <label for="website">Site web :</label>
-    <input formControlName="website" id="website" type="url" />
-
-    <button type="submit" class="btn" [disabled]="loading">
-      {{ loading ? "Mise à jour..." : "Mettre à jour" }}
-    </button>
-  </form>
-</section>
-
-<!-- Ajout des fonctionnalités du profil -->
-<section class="profile-section">
-  <div class="profile-item">
-    <h2>Personnalisez votre personnage</h2>
-    <p>Définissez votre avatar, votre histoire et vos préférences RPG.</p>
-  </div>
-  <div class="profile-item">
-    <h2>Suivez votre progression</h2>
-    <p>Consultez vos aventures passées, vos succès et vos statistiques.</p>
-  </div>
-  <div class="profile-item">
-    <h2>Gérez les paramètres multijoueur</h2>
-    <p>Invitez des amis et rejoignez des sessions collaboratives.</p>
-  </div>
-</section>
-
-<app-footer></app-footer>

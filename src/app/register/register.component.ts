@@ -3,12 +3,13 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { NavComponent } from '../nav/nav.component';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NavComponent],
 })
 export class RegisterComponent {
   fb = inject(FormBuilder);
@@ -31,7 +32,7 @@ export class RegisterComponent {
         if (result.error) {
           this.errorMessage = result.error.message;
         } else {
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl('/profile');
         }
       });
   }

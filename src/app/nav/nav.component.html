@@ -1,0 +1,15 @@
+<div class="navbar" [ngClass]="{ collapsed: isCollapsed }">
+  @if (authService.currentUser() === null) {
+  <div class="nav-links">
+    <a routerLink="/login">Login</a>
+    <a routerLink="/register">Register</a>
+  </div>
+  } @if (authService.currentUser()) {
+  <div class="user-info">
+    <span>{{ authService.currentUser()?.username }}</span>
+    <a routerLink="/profile">Profile</a>
+    <span class="btn" (click)="logout()">Logout</span>
+  </div>
+  }
+  <div class="toggle-btn" (click)="toggleNavbar()">☰</div>
+</div>
