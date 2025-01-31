@@ -42,10 +42,12 @@ export class SupabaseService {
       this._session.set(data.session);
     }
 
-    this.supabase.auth.onAuthStateChange((event, session) => {
-      console.log(`🔄 Auth state changed: ${event}`);
-      this._session.set(session);
-    });
+    this.supabase.auth.onAuthStateChange(
+      (event: AuthChangeEvent, session: AuthSession | null) => {
+        console.log(`🔄 Auth state changed: ${event}`);
+        this._session.set(session);
+      }
+    );
   }
 
   get session() {

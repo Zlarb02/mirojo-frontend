@@ -1,34 +1,32 @@
-import { Component, computed, OnInit } from '@angular/core';
-import { NavigationStart, Router, RouterOutlet } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SupabaseService } from './services/supabase.service';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule],
+  imports: [CommonModule, RouterOutlet, RouterLink],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  title = 'MirojoFrontend';
-
-  constructor(
-    private readonly router: Router,
-    private readonly supabase: SupabaseService
-  ) {}
-
-  // 🔹 `computed()` permet de toujours avoir la dernière session
-  session = computed(() => this.supabase.session);
-  isLoggedIn = computed(() => !!this.supabase.session);
-
-  ngOnInit() {
-    console.log('🔄 AppComponent chargé.');
-
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        console.log('🔄 Navigation détectée vers :', event.url);
+  authService = inject(AuthService);
+  ngOnInit(): void {
+    this.authService.supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        this.authService.currentUser.set({
+          email: session?.user.email!,
+          username:
+            session?.user.identities?.at(0)?.identity_data?.['username'],
+        });
+      } else if (event === 'SIGNED_OUT') {
+        this.authService.currentUser.set(null);
       }
     });
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

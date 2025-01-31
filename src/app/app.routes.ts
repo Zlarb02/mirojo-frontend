@@ -5,6 +5,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { DiceRollComponent } from './dice-roll/dice-roll.component';
 import { AuthComponent } from './auth/auth.component';
 import { SupabaseService } from './services/supabase.service';
+import { RegisterComponent } from './register/register.component';
+import { LoginComponent } from './login/login.component';
 
 const authGuard: CanActivateFn = () => {
   const supabase = inject(SupabaseService);
@@ -22,9 +24,14 @@ const authGuard: CanActivateFn = () => {
 };
 
 export const routes: Routes = [
-  { path: 'welcome', component: WelcomeComponent },
-  { path: 'login', component: AuthComponent },
+  {
+    path: 'register',
+    component: RegisterComponent,
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+  },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'dice-roll', component: DiceRollComponent },
-  { path: '', redirectTo: '/welcome', pathMatch: 'full' },
 ];

@@ -42,7 +42,6 @@ export class AuthComponent {
     });
   }
 
-  // 🔹 Inscription par email et mot de passe
   async signUpWithEmail(): Promise<void> {
     if (this.signUpForm.invalid) return;
 
@@ -53,7 +52,7 @@ export class AuthComponent {
       if (error) throw error;
 
       alert('Compte créé ! Vérifie ton email pour activer ton compte.');
-      this.router.navigate(['/login']); // Redirection après inscription
+      this.router.navigate(['/login']);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -63,7 +62,6 @@ export class AuthComponent {
     }
   }
 
-  //  Connexion par Magic Link
   async signInWithMagicLink(): Promise<void> {
     if (this.signInForm.invalid) return;
 
@@ -85,7 +83,6 @@ export class AuthComponent {
     }
   }
 
-  //  Connexion par Email/Mot de Passe
   async loginWithEmail(): Promise<void> {
     if (this.loginForm.invalid) return;
 
@@ -105,7 +102,6 @@ export class AuthComponent {
     }
   }
 
-  //  Connexion avec Google
   async signInWithGoogle(): Promise<void> {
     try {
       this.loading = true;
