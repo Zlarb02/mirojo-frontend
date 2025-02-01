@@ -1,8 +1,9 @@
 @import "../../styles.scss";
 .navbar {
   position: fixed;
+  margin: 0;
   top: 0;
-  width: 90%;
+  right: 2.5%;
   left: 2.5%;
   margin-top: 4%;
   height: 40px;
@@ -102,4 +103,24 @@
   cursor: pointer;
   color: white;
   transition: transform 0.3s ease;
+}
+@media screen and (max-width: 790px) {
+  .navbar {
+    max-width: 89%;
+    right: 2.5%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .navbar {
+    max-width: 87%;
+    right: 2.5%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .navbar {
+    max-width: 85%;
+    right: 2.5%;
+  }
 }

@@ -1,29 +1,5 @@
 @import "../../styles.scss";
 
-.colored-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: linear-gradient(300deg, $tiffany-blue, $grape, $neon-blue);
-  background-size: 180% 180%;
-  animation: gradient-animation 18s ease infinite;
-  color: white;
-}
-
-@keyframes gradient-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
 .bigText {
   font-size: 3rem;
   font-weight: 200;
@@ -35,7 +11,13 @@
   padding: 20px;
   text-align: left;
   max-width: 800px;
+  max-height: 400px;
+  overflow: scroll;
   margin: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .faq-item {
