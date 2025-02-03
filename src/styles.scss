@@ -1,7 +1,6 @@
 html,
 body {
   width: 100vw;
-  height: 100vh;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -143,7 +142,6 @@ body {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -157,11 +155,11 @@ h1 {
   pointer-events: auto; /* Permet de cliquer sur le titre */
   background: linear-gradient(
     to right,
-    #ff4d00,
+    #ff8800,
     #ffb700,
-    #ff6a00,
+    #ff9d00,
     #ffb700,
-    #ff4d00
+    #ff8800
   );
   text-align: center;
   background-size: 200%;
@@ -169,11 +167,11 @@ h1 {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: animate-gradient 22s linear infinite;
-  opacity: 0.8;
   font-size: 3.3rem;
   font-family: "Lilita One", serif;
   font-weight: 400;
   font-style: normal;
+  filter: contrast(1.3);
 }
 
 @keyframes animate-gradient {
@@ -195,29 +193,34 @@ h1 {
   display: flex;
   place-content: center;
   align-items: center;
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
 .colored-container {
   z-index: 10;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
-  height: 100vh;
   width: 100vw;
   //background: linear-gradient(300deg, $tiffany-blue, $grape, $neon-blue);
   background-size: 180% 180%;
   //animation: gradient-animation 18s ease infinite;
   color: white;
-  overflow: scroll;
-  padding-top: 20px;
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 .scrollable {
   overflow: scroll;
-  margin-top: -12%;
-  padding-top: 12%;
-  max-height: 90vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin: 0;
+  padding-top: 10vh;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 header {
   display: flex;
@@ -283,10 +286,6 @@ button {
   height: 100%;
 }
 
-h1 {
-  color: #ffffff;
-}
-
 .btn {
   display: inline-block;
   padding: 10px 20px;
@@ -297,11 +296,42 @@ h1 {
   background-color: $orange-playfull;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: 1px solid #434346;
+  -webkit-text-fill-color: #f1f1f1;
+  -webkit-box-shadow: 0 0 0px 1000px #1b1b1c inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 input {
   padding: 1rem;
   margin: 10px;
   border: none;
   border-radius: 0.5rem;
+  background-color: $mindaro;
+}
+
+input:-internal-autofill-selected {
+  appearance: menulist-button;
+  // background-image: none !important;
+  // background-color: light-dark(
+  //   rgb(232, 240, 254),
+  //   rgba(70, 90, 126, 0.4)
+  // )!important;
+  background-color: $mindaro !important;
+  color: fieldtext !important;
+}
+
+input.userLogForm,
+text area {
   background-color: $mindaro;
 }
 
@@ -335,6 +365,8 @@ form {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+
+  filter: contrast(1.3);
 
   background-color: rgb(5 150 105);
 }
@@ -588,9 +620,9 @@ button {
   --size: 750px;
   --speed: 50s;
   --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
-
-  width: var(--size);
-  height: var(--size);
+  margin-left: 13%;
+  width: 75vw;
+  height: 75vh;
   filter: blur(calc(var(--size) / 5));
   background: linear-gradient(hsl(222, 84, 60, 100%), hsl(164, 79, 71));
   animation: rotate var(--speed) var(--easing) alternate infinite;
@@ -615,23 +647,20 @@ button {
 }
 
 :root {
-  --card-height: 65vh;
+  --card-height: 600px;
   --card-width: calc(var(--card-height) / 1.5);
 }
 
 body {
-  min-height: 100vh;
   background: #212534;
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
   box-sizing: border-box;
 }
 
 .card {
-  margin-top: 120px;
+  margin-top: 40px;
   background: #191c29a4;
   width: var(--card-width);
   height: var(--card-height);
@@ -647,7 +676,12 @@ body {
   font-size: 1.5em;
   color: rgba(88, 199, 250, 0.125);
   cursor: pointer;
-  font-family: cursive;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  //box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .card:hover {
@@ -660,9 +694,13 @@ body {
   opacity: 0.3;
 }
 
+.card:hover:after {
+  opacity: 1;
+}
+
 .card::before {
   content: "";
-  width: 104%;
+  width: 103%;
   height: 102%;
   border-radius: 16px;
   background-image: linear-gradient(
@@ -674,10 +712,16 @@ body {
   position: absolute;
   z-index: -1;
   top: -1%;
-  left: -2%;
+  left: -1.5%;
   animation: spin 5.5s linear infinite;
-  filter: sepia(0.4);
+  filter: brightness(0.1);
   opacity: 0.2;
+
+  //background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  //border-radius: 15px;
+  //border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .card::after {
@@ -687,7 +731,7 @@ body {
   left: 0;
   right: 0;
   z-index: -1;
-  height: 100%;
+  height: 60vh;
   width: 100%;
   margin: 0 auto;
   transform: scale(0.8);
@@ -698,7 +742,7 @@ body {
     #3c67e3 43%,
     #4e00c2
   );
-  opacity: 1;
+  opacity: 0.3;
   transition: opacity 0.5s;
   animation: spin 2.5s linear infinite;
 }
@@ -712,10 +756,16 @@ body {
   }
 }
 
-a {
-  color: #212534;
-  text-decoration: none;
-  font-family: sans-serif;
-  font-weight: bold;
-  margin-top: 2rem;
+@media screen and (max-width: 800px) {
+  .card {
+    --card-height: 550px;
+  }
 }
+
+// a {
+//   color: #212534;
+//   text-decoration: none;
+//   font-family: sans-serif;
+//   font-weight: bold;
+//   margin-top: 2rem;
+// }
