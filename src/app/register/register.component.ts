@@ -4,12 +4,14 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { NavComponent } from '../nav/nav.component';
+import { FooterComponent } from '../footer/footer.component';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   standalone: true,
-  imports: [ReactiveFormsModule, NavComponent],
+  imports: [ReactiveFormsModule, NavComponent, FooterComponent],
+  styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
   fb = inject(FormBuilder);

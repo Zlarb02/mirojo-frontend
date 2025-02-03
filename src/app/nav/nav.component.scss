@@ -1,14 +1,24 @@
 @import "../../styles.scss";
-.navbar {
-  position: fixed;
-  margin: 0;
-  top: 0;
-  right: 2.5%;
-  left: 2.5%;
-  margin-top: 4%;
-  height: 40px;
+
+.nav-container {
+  position: absolute;
+  top: 1%;
+  width: 100vw;
+  height: 80px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  z-index: 20;
+}
+
+.navbar {
+  position: relative;
+  margin: 0;
+  height: 40px;
+  max-width: 90%;
+  display: flex;
+  align-self: center;
+  justify-content: flex-start;
+  gap: 3%;
   align-items: center;
   padding: 10px 20px;
   background: rgba(255, 255, 255, 0.08);
@@ -16,53 +26,60 @@
   border-radius: 15px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  animation: expandNavbar 0.3s ease forwards; // Animation par défaut
+  animation: expandNavbar 0.3s ease forwards;
   transition: width 0.3s ease, left 0.3s ease;
+  overflow: hidden;
+
   * {
     color: white;
   }
+
   *:hover {
     color: $tiffany-blue;
   }
+
   button:hover,
   .btn:hover {
     color: lighten($color: $tiffany-blue, $amount: 15);
   }
 
   &.collapsed {
-    width: 23px;
+    width: 22px;
     overflow: hidden;
-    justify-content: flex-end;
-    gap: 100px;
-    left: 89.3%;
+    margin-right: auto;
+    margin-left: 3.3%;
     animation: collapseNavbar 0.3s ease forwards;
-
-    .toggle-btn {
-      transform: rotate(90deg);
-    }
+    gap: 90%;
   }
 }
+
+// (Les animations et autres styles restent inchangés)
 
 @keyframes collapseNavbar {
   0% {
     width: 90%;
-    left: 2.5%;
+    gap: 3%;
   }
   100% {
-    width: 23px;
-    left: 89.3%;
+    width: 22px;
+    gap: 60px;
   }
 }
 
 @keyframes expandNavbar {
   0% {
-    width: 23px;
-    left: 89.3%;
+    width: 22px;
+    margin-right: auto;
+    margin-left: 3.3%;
+    gap: 60px;
+  }
+  99% {
+    margin-right: auto;
+    margin-left: 3.3%;
   }
   100% {
     width: 90%;
-    left: 2.5%;
+    gap: 3%;
   }
 }
 .navbar a {
@@ -84,43 +101,110 @@
   justify-self: center;
 }
 
-.navbar .user-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  font-weight: 500;
-
-  justify-self: center;
-}
-
-.navbar .user-info span {
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
 .navbar .toggle-btn {
-  font-size: 24px;
+  font-size: 34px;
+  margin-left: -4px;
+  margin-top: -6px;
   cursor: pointer;
   color: white;
   transition: transform 0.3s ease;
 }
+
 @media screen and (max-width: 790px) {
   .navbar {
-    max-width: 89%;
-    right: 2.5%;
+    max-width: 80%;
+    &.collapsed {
+      width: 22px;
+      overflow: hidden;
+      // On force l'élément à se déplacer à droite dans le conteneur flex
+      margin-left: 3.6;
+      margin-right: auto;
+    }
   }
 }
+//   @keyframes collapseNavbar {
+//     0% {
+//       width: 90%;
+//       left: 2.5%;
+//     }
+//     100% {
+//       width: 22px;
+//       left: 85%;
+//     }
+//   }
 
-@media screen and (max-width: 600px) {
-  .navbar {
-    max-width: 87%;
-    right: 2.5%;
-  }
-}
+//   @keyframes expandNavbar {
+//     0% {
+//       width: 22px;
+//       left: 85%;
+//     }
+//     100% {
+//       width: 90%;
+//       left: 2.5%;
+//     }
+//   }
+// }
 
-@media screen and (max-width: 500px) {
-  .navbar {
-    max-width: 85%;
-    right: 2.5%;
-  }
-}
+// @media screen and (max-width: 600px) {
+//   .navbar {
+//     max-width: 87%;
+//     right: 2.5%;
+//     &.collapsed {
+//       left: 85%;
+//     }
+//   }
+
+//   @keyframes collapseNavbar {
+//     0% {
+//       width: 90%;
+//       left: 2.5%;
+//     }
+//     100% {
+//       width: 22px;
+//       left: 85%;
+//     }
+//   }
+
+//   @keyframes expandNavbar {
+//     0% {
+//       width: 22px;
+//       left: 85%;
+//     }
+//     100% {
+//       width: 90%;
+//       left: 2.5%;
+//     }
+//   }
+// }
+
+// @media screen and (max-width: 500px) {
+//   .navbar {
+//     max-width: 85%;
+//     right: 2.5%;
+//     &.collapsed {
+//       left: 85%;
+//     }
+//   }
+
+//   @keyframes collapseNavbar {
+//     0% {
+//       width: 90%;
+//       left: 2.5%;
+//     }
+//     100% {
+//       width: 22px;
+//       left: 85%;
+//     }
+//   }
+
+//   @keyframes expandNavbar {
+//     0% {
+//       width: 22px;
+//       left: 85%;
+//     }
+//     100% {
+//       width: 90%;
+//       left: 2.5%;
+//     }
+//   }
+// }

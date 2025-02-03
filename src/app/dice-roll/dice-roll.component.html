@@ -1,14 +1,13 @@
+<app-nav></app-nav>
 <div class="afterLoad">
-    <div class="overlay">
-        <br /><br /><br /><br />
-        <h1>MiRoJo.app</h1>
-        <h2>Mini Roleplay Journey</h2>
-        <p *ngIf="diceResult !== null">
-            Résultat du dé : {{ diceResult }}
-            <span *ngIf="resultMessage">
-                - {{ resultMessage }}
-            </span>
-        </p>
-    </div>
+  <div class="overlay">
+    <br /><br /><br /><br />
+    <h1>MiRoJo.app</h1>
+    <h2>Mini Roleplay Journey</h2>
+    <p *ngIf="diceResult !== null">
+      Résultat du dé : {{ diceResult }}
+      <span *ngIf="resultMessage"> - {{ resultMessage }} </span>
+    </p>
+  </div>
 </div>
 <div id="scene-container" style="width: 100vw; height: 100vh"></div>
