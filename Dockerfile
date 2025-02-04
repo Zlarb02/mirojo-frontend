@@ -1,5 +1,5 @@
 # Utiliser l'image officielle de Node.js pour la phase de build
-FROM node:18 AS build-stage
+FROM node:20 AS build-stage
 
 # Installer pnpm globalement AVANT de l'utiliser
 RUN corepack enable && corepack prepare pnpm@latest --activate
