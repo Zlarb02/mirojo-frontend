@@ -162,10 +162,10 @@ export class DiceRollComponent implements OnInit {
         'assets/3d/table-wood/wood_table_worn_diff_4k.jpg'
       ),
       normalMap: new THREE.TextureLoader().load(
-        'wood_table_worn_nor_gl_4k.exr'
+        'assets/3d/table-wood/wood_table_worn_nor_gl_4k.exr'
       ),
       roughnessMap: new THREE.TextureLoader().load(
-        'wood_table_worn_rough_4k.exr'
+        'assets/3d/table-wood/wood_table_worn_rough_4k.exr'
       ),
     });
     const tabletop = new THREE.Mesh(tabletopGeometry, tabletopMaterial);
@@ -181,10 +181,10 @@ export class DiceRollComponent implements OnInit {
         'assets/3d/table-wood/wood_table_worn_diff_4k.jpg'
       ),
       normalMap: new THREE.TextureLoader().load(
-        'wood_table_worn_nor_gl_4k.exr'
+        'assets/3d/table-wood/wood_table_worn_nor_gl_4k.exr'
       ),
       roughnessMap: new THREE.TextureLoader().load(
-        'wood_table_worn_rough_4k.exr'
+        'assets/3d/table-wood/wood_table_worn_rough_4k.exr'
       ),
     });
     const legPositions = [
@@ -540,10 +540,19 @@ export class DiceRollComponent implements OnInit {
   }
 
   private checkCollisions(): void {
+    if (!this.cave) return; // Vérifie si la grotte est bien chargée avant d'essayer de détecter des collisions
+
     const direction = new THREE.Vector3();
     this.camera.getWorldDirection(direction);
 
-    // Check collision in the forward direction
+    // Vérifier si l'objet `cave` est bien un objet avec une propriété `layers`
+    if (!this.cave.layers) {
+      console.warn(
+        "L'objet 'cave' n'a pas de propriété layers. Ignorant la détection de collision."
+      );
+      return;
+    }
+
     this.raycaster.set(this.camera.position, direction);
     const intersectsForward = this.raycaster.intersectObject(this.cave, true);
 
@@ -554,7 +563,6 @@ export class DiceRollComponent implements OnInit {
       }
     }
 
-    // Check collision in the backward direction
     const backwardDirection = direction.clone().negate();
     this.raycaster.set(this.camera.position, backwardDirection);
     const intersectsBackward = this.raycaster.intersectObject(this.cave, true);
