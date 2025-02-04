@@ -90,7 +90,7 @@
 }
 .navbar a {
   text-decoration: none;
-  font-size: large;
+  font-size: xx-large;
   font-weight: 400;
   transition: color 0.3s ease;
   margin: 0 10px;
@@ -118,6 +118,8 @@
 }
 .nav-links {
   margin: auto;
+  display: flex;
+  gap: 20%;
 }
 @media screen and (max-width: 790px) {
   .navbar {
@@ -129,6 +131,16 @@
       margin-left: 3.6;
       margin-right: auto;
     }
+
+    a {
+      font-size: x-large;
+    }
+  }
+
+  .nav-links {
+    margin: auto;
+    display: flex;
+    gap: 2%;
   }
 }
 //   @keyframes collapseNavbar {

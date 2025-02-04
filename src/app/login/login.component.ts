@@ -11,6 +11,7 @@ import { FooterComponent } from "../footer/footer.component";
   templateUrl: "./login.component.html",
   standalone: true,
   imports: [ReactiveFormsModule, NavComponent, FooterComponent],
+  styleUrl: "./login.component.css",
 })
 export class LoginComponent {
   fb = inject(FormBuilder);
