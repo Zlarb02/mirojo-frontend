@@ -2,15 +2,32 @@
 <div class="colored-container">
   <div class="scrollable">
   <header>
-    <h1>Votre Profil</h1>
+    <h1>Profil de {{ authService.currentUser()?.username || "Non défini" }}</h1>
   </header>
 
   <p>
-    <strong>Nom d'utilisateur :</strong>
-    {{ authService.currentUser()?.username || "Non défini" }}
+    <strong>Nom complet:</strong>
+    {{ authService.currentUser()?.full_name || "Non défini" }}
   </p>
+<div class="user-field">
+  <input [(ngModel)]="newUsername" placeholder="Nouveau nom d'utilisateur" />
+  <button class="squishy squishy-classic" style="scale:0.6;" (click)="updateUsername()">🖉 Mettre à jour</button>
+</div>
+<div class="user-field">
+  <input [(ngModel)]="newFullName" placeholder="Nom complet" />
+  <button class="squishy squishy-classic" style="scale:0.6;" (click)="updateFullName()">🖉 Mettre à jour</button>
+</div>
+<div class="user-field">
+  <input [(ngModel)]="newWebsite" placeholder="Votre site web" />
+  <button class="squishy squishy-classic" style="scale:0.6;" (click)="updateWebsite()">🖉 Mettre à jour</button>
+</div>
+<div class="user-field">
+  <input [(ngModel)]="newAvatarUrl" placeholder="l'url d'une image pour l'avatar" />
+  <button class="squishy squishy-classic" style="scale:0.6;" (click)="updateAvatarUrl()">🖉 Mettre à jour</button>
+</div>
 
-  <button (click)="logout()">Se déconnecter</button>
+<button class="squishy squishy-cosmic" style="scale:0.8; min-height: fit-content;" (click)="logout()">Se
+  déconnecter</button>
 
   <app-footer></app-footer>
 </div>
