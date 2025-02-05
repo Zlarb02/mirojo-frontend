@@ -108,13 +108,15 @@
 
 .navbar .toggle-btn {
   position: absolute;
-  font-size: 34px;
+  font-size: 30px;
   margin-left: -12px;
-  margin-top: -12px;
+  margin-top: -8px;
   cursor: pointer;
   color: white;
   transition: transform 0.3s ease;
+  transform: scale(0.9);
 }
+
 .nav-links {
   margin: auto;
   display: flex;
