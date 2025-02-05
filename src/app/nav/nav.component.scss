@@ -13,14 +13,14 @@
 .navbar {
   position: relative;
   margin: 0;
-  height: 40px;
+  height: 60px;
   max-width: 90%;
   display: flex;
   align-self: center;
   justify-content: flex-start;
   gap: 3%;
   align-items: center;
-  padding: 10px 20px;
+  padding: 0px 20px;
   background: rgba(255, 255, 255, 0.08);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
@@ -28,9 +28,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   animation: expandNavbar 0.3s ease forwards;
-  transition:
-    width 0.3s ease,
-    left 0.3s ease;
+  transition: all 0.3s ease;
   overflow: hidden;
   * {
     color: white;
@@ -54,7 +52,8 @@
     gap: 90%;
     .nav-links {
       opacity: 0;
-      margin-left: 80px;
+      transition: all 0s;
+      margin-left: 30px;
     }
   }
 }
@@ -90,9 +89,9 @@
 }
 .navbar a {
   text-decoration: none;
-  font-size: xx-large;
+  font-size: larger;
   font-weight: 400;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   margin: 0 10px;
 
   justify-self: center;
@@ -110,8 +109,8 @@
 .navbar .toggle-btn {
   position: absolute;
   font-size: 34px;
-  margin-left: -4px;
-  margin-top: -6px;
+  margin-left: -12px;
+  margin-top: -12px;
   cursor: pointer;
   color: white;
   transition: transform 0.3s ease;
@@ -119,7 +118,21 @@
 .nav-links {
   margin: auto;
   display: flex;
-  gap: 20%;
+  margin-top: 8px;
+}
+a.squishy-cosmic {
+  padding: 0.4rem 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.squishy-cosmic {
+  margin: 0;
+  padding: 0.2rem 0.6rem;
+  opacity: 0.65;
+}
+
+.squishy-cosmic:hover {
+  opacity: 0.65;
 }
 @media screen and (max-width: 790px) {
   .navbar {
@@ -133,14 +146,8 @@
     }
 
     a {
-      font-size: x-large;
+      font-size: medium;
     }
-  }
-
-  .nav-links {
-    margin: auto;
-    display: flex;
-    gap: 2%;
   }
 }
 //   @keyframes collapseNavbar {

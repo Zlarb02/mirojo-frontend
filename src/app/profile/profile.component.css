@@ -1,11 +1,18 @@
+input {
+  margin: 0;
+}
+
 .user-field {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   margin-bottom: 30px;
+  width: 100vw;
 }
 
 .squishy {
   margin-bottom: 0;
+  scale: 0.8;
+  padding: 0.4rem 2rem;
 }

@@ -1,15 +1,21 @@
 <div class="nav-container">
   <div class="navbar" [ngClass]="{ collapsed: isCollapsed }">
-    <div class="toggle-btn" (click)="toggleNavbar()">☰</div>
+    <div
+      class="squishy squishy-cosmic"
+      class="toggle-btn"
+      (click)="toggleNavbar()"
+    >
+      <button class="squishy squishy-cosmic">☰</button>
+    </div>
     @if (authService.currentUser() === null) {
     <div class="nav-links">
-      <a routerLink="/login">Login</a>
-      <a routerLink="/register">Register</a>
+      <a class="squishy squishy-cosmic" routerLink="/login">Login</a>
+      <a class="squishy squishy-cosmic" routerLink="/register">Register</a>
     </div>
     } @if (authService.currentUser()) {
     <div class="nav-links">
-      <a routerLink="/profile">Profile</a>
-      <a (click)="logout()">Logout </a>
+      <a class="squishy squishy-cosmic" routerLink="/profile">Profile</a>
+      <a class="squishy squishy-cosmic" (click)="logout()">Logout </a>
     </div>
     }
   </div>
