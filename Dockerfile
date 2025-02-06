@@ -2,7 +2,7 @@
 FROM node:20 AS build-stage
 
 # Installer pnpm globalement AVANT de l'utiliser
-RUN npm install -g corepack && corepack enable && corepack prepare pnpm@latest --activate
+RUN npm install --ignore-scripts -g corepack && corepack enable && corepack prepare pnpm@latest --activate
 # Définir le répertoire de travail
 WORKDIR /app
 
