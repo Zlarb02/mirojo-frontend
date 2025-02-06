@@ -1,11 +1,11 @@
-import { inject } from '@angular/core';
-import { Routes, CanActivateFn, Router } from '@angular/router';
-import { WelcomeComponent } from './welcome/welcome.component';
-import { ProfileComponent } from './profile/profile.component';
-import { DiceRollComponent } from './dice-roll/dice-roll.component';
-import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
-import { AuthService } from './services/auth.service';
+import { inject } from "@angular/core";
+import { Routes, CanActivateFn, Router } from "@angular/router";
+import { WelcomeComponent } from "./features/welcome/welcome.component";
+import { ProfileComponent } from "./features/auth/profile/profile.component";
+import { DiceRollComponent } from "./features/game/dice-roll/dice-roll.component";
+import { RegisterComponent } from "./features/auth/register/register.component";
+import { LoginComponent } from "./features/auth/login/login.component";
+import { AuthService } from "./core/auth.service";
 
 const connected: CanActivateFn = () => {
   const auth = inject(AuthService);
@@ -14,7 +14,7 @@ const connected: CanActivateFn = () => {
   return new Promise<boolean>((resolve) => {
     setTimeout(() => {
       if (!auth.currentUser()?.email) {
-        router.navigate(['/login']);
+        router.navigate(["/login"]);
         resolve(false);
       } else {
         resolve(true);
@@ -30,7 +30,7 @@ const unConnected: CanActivateFn = () => {
   return new Promise<boolean>((resolve) => {
     setTimeout(() => {
       if (auth.currentUser()?.email) {
-        router.navigate(['/profile']);
+        router.navigate(["/profile"]);
         resolve(false);
       } else {
         resolve(true);
@@ -41,19 +41,19 @@ const unConnected: CanActivateFn = () => {
 
 export const routes: Routes = [
   {
-    path: 'register',
+    path: "register",
     component: RegisterComponent,
     canActivate: [unConnected],
   },
   {
-    path: 'login',
+    path: "login",
     component: LoginComponent,
     canActivate: [unConnected],
   },
-  { path: 'profile', component: ProfileComponent, canActivate: [connected] },
+  { path: "profile", component: ProfileComponent, canActivate: [connected] },
 
-  { path: 'dice-roll', component: DiceRollComponent },
+  { path: "dice-roll", component: DiceRollComponent },
 
-  { path: 'welcome', component: WelcomeComponent },
-  { path: '', component: WelcomeComponent },
+  { path: "welcome", component: WelcomeComponent },
+  { path: "", component: WelcomeComponent },
 ];

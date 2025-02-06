@@ -2,9 +2,9 @@ import { HttpClient } from "@angular/common/http";
 import { Component, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { AuthService } from "../services/auth.service";
-import { NavComponent } from "../nav/nav.component";
-import { FooterComponent } from "../footer/footer.component";
+import { AuthService } from "../../../core/auth.service";
+import { NavComponent } from "../../../layout/nav/nav.component";
+import { FooterComponent } from "../../../layout/footer/footer.component";
 
 @Component({
   selector: "app-login",

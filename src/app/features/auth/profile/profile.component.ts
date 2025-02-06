@@ -1,13 +1,13 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { FooterComponent } from '../footer/footer.component';
-import { AuthService } from '../services/auth.service';
-import { NavComponent } from '../nav/nav.component';
+import { Component, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { Router } from "@angular/router";
+import { FooterComponent } from "../../../layout/footer/footer.component";
+import { AuthService } from "../../../core/auth.service";
+import { NavComponent } from "../../../layout/nav/nav.component";
 
 @Component({
-  selector: 'app-profile',
+  selector: "app-profile",
   standalone: true,
   imports: [
     CommonModule,
@@ -16,18 +16,18 @@ import { NavComponent } from '../nav/nav.component';
     NavComponent,
     FormsModule,
   ],
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css'],
+  templateUrl: "./profile.component.html",
+  styleUrls: ["./profile.component.css"],
 })
 export class ProfileComponent {
   authService = inject(AuthService);
   router = inject(Router);
 
   // Variables pour stocker les nouvelles valeurs saisies
-  newUsername = '';
-  newFullName = '';
-  newAvatarUrl = '';
-  newWebsite = '';
+  newUsername = "";
+  newFullName = "";
+  newAvatarUrl = "";
+  newWebsite = "";
 
   // Flags pour indiquer si chaque champ est en mode édition
   editUsername = false;
@@ -37,27 +37,27 @@ export class ProfileComponent {
 
   logout(): void {
     this.authService.logout().then(() => {
-      this.router.navigateByUrl('/login');
+      this.router.navigateByUrl("/login");
     });
   }
 
   // Démarrer l'édition d'un champ donné et initialiser la valeur de l'input
   startEdit(field: string): void {
     switch (field) {
-      case 'username':
-        this.newUsername = this.authService.currentUser()?.username || '';
+      case "username":
+        this.newUsername = this.authService.currentUser()?.username || "";
         this.editUsername = true;
         break;
-      case 'fullName':
-        this.newFullName = this.authService.currentUser()?.full_name || '';
+      case "fullName":
+        this.newFullName = this.authService.currentUser()?.full_name || "";
         this.editFullName = true;
         break;
-      case 'website':
-        this.newWebsite = this.authService.currentUser()?.website || '';
+      case "website":
+        this.newWebsite = this.authService.currentUser()?.website || "";
         this.editWebsite = true;
         break;
-      case 'avatar':
-        this.newAvatarUrl = this.authService.currentUser()?.avatar_url || '';
+      case "avatar":
+        this.newAvatarUrl = this.authService.currentUser()?.avatar_url || "";
         this.editAvatar = true;
         break;
     }
@@ -67,60 +67,60 @@ export class ProfileComponent {
   updateUsername() {
     this.authService.updateUsername(this.newUsername).subscribe({
       next: () => {
-        alert('Nom d’utilisateur mis à jour !');
+        alert("Nom d’utilisateur mis à jour !");
         this.editUsername = false;
       },
-      error: (err) => alert('Erreur : ' + err.message),
+      error: (err) => alert("Erreur : " + err.message),
     });
   }
 
   updateFullName() {
     this.authService.updateFullName(this.newFullName).subscribe({
       next: () => {
-        alert('Nom complet mis à jour !');
+        alert("Nom complet mis à jour !");
         this.editFullName = false;
       },
-      error: (err) => alert('Erreur : ' + err.message),
+      error: (err) => alert("Erreur : " + err.message),
     });
   }
 
   updateAvatarUrl() {
     this.authService.updateAvatarUrl(this.newAvatarUrl).subscribe({
       next: () => {
-        alert('URL de l’avatar mise à jour !');
+        alert("URL de l’avatar mise à jour !");
         this.editAvatar = false;
       },
-      error: (err) => alert('Erreur : ' + err.message),
+      error: (err) => alert("Erreur : " + err.message),
     });
   }
 
   updateWebsite() {
     this.authService.updateWebsite(this.newWebsite).subscribe({
       next: () => {
-        alert('Site web mis à jour !');
+        alert("Site web mis à jour !");
         this.editWebsite = false;
       },
-      error: (err) => alert('Erreur : ' + err.message),
+      error: (err) => alert("Erreur : " + err.message),
     });
   }
 
   // Annuler l'édition et réinitialiser l'input à la valeur actuelle
   cancelEdit(field: string) {
     switch (field) {
-      case 'username':
-        this.newUsername = this.authService.currentUser()?.username || '';
+      case "username":
+        this.newUsername = this.authService.currentUser()?.username || "";
         this.editUsername = false;
         break;
-      case 'fullName':
-        this.newFullName = this.authService.currentUser()?.full_name || '';
+      case "fullName":
+        this.newFullName = this.authService.currentUser()?.full_name || "";
         this.editFullName = false;
         break;
-      case 'website':
-        this.newWebsite = this.authService.currentUser()?.website || '';
+      case "website":
+        this.newWebsite = this.authService.currentUser()?.website || "";
         this.editWebsite = false;
         break;
-      case 'avatar':
-        this.newAvatarUrl = this.authService.currentUser()?.avatar_url || '';
+      case "avatar":
+        this.newAvatarUrl = this.authService.currentUser()?.avatar_url || "";
         this.editAvatar = false;
         break;
     }
