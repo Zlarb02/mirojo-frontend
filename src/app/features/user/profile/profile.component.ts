@@ -2,9 +2,9 @@ import { Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
-import { FooterComponent } from "../../../layout/footer/footer.component";
-import { AuthService } from "../../../core/auth.service";
-import { NavComponent } from "../../../layout/nav/nav.component";
+import { FooterComponent } from "../../../shared/components/footer/footer.component";
+import { AuthService } from "../../../core/services/auth.service";
+import { NavComponent } from "../../../shared/components/nav/nav.component";
 
 @Component({
   selector: "app-profile",

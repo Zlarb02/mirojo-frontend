@@ -7,6 +7,34 @@ body {
   background-color: #071c39;
 }
 
+.row,
+.col {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.row {
+  flex-direction: row;
+  justify-content: center;
+}
+
+.col {
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+.hidden {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  pointer-events: none;
+  height: 0px;
+}
+
 /* COLORS START */
 
 /* SCSS HEX */
@@ -348,7 +376,6 @@ form {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 50px;
   filter: brightness(1.3) contrast(1.2);
 
   background-color: rgb(5 150 105);
@@ -713,12 +740,10 @@ body {
 
 .card {
   margin-top: 10vh;
-  background: #191c29a4;
   width: var(--card-width);
   height: var(--card-height);
   padding: 3px;
   position: relative;
-  border-radius: 12px;
   justify-content: flex-start;
   align-items: center;
   gap: 40px;

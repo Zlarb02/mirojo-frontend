@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
-import { FooterComponent } from "../../layout/footer/footer.component";
-import { NavComponent } from "../../layout/nav/nav.component";
+import { FooterComponent } from "../../shared/components/footer/footer.component";
+import { NavComponent } from "../../shared/components/nav/nav.component";
 
 @Component({
   selector: "app-welcome",

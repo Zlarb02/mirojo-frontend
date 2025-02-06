@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { CommonModule } from "@angular/common";
-import { NavComponent } from "../../../layout/nav/nav.component";
+import { NavComponent } from "../../../shared/components/nav/nav.component";
 
 @Component({
   selector: "app-dice-roll",

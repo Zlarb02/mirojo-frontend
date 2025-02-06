@@ -1,4 +1,6 @@
-import { Injectable, signal } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
+
+import { SupabaseService } from "./supabase.service";
 import {
   AuthResponse,
   createClient,
@@ -11,10 +13,9 @@ import { Observable, from, tap } from "rxjs";
   providedIn: "root",
 })
 export class AuthService {
-  supabase = createClient(
-    "https://supasupa.mirojo.app",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzM3OTMyNDAwLAogICJleHAiOiAxODk1Njk4ODAwCn0.gleKpCo88nbAdYoByc5MjDpmoQa_mCrUZplMsnHWQT8",
-  );
+  private supabaseService = inject(SupabaseService);
+  // Utilisation de l'instance partagée
+  supabase = this.supabaseService.client;
 
   currentUser = signal<{
     id: string;
