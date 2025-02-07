@@ -22,7 +22,7 @@
           class="row universe-item"
           *ngFor="let universe of mirojoUniverses()"
         >
-          <button (click)="selectUniverse.emit(universe)">
+          <button (click)="onSelect(universe)">
             {{ universe.name }}
           </button>
           <p>{{ universe.description }}</p>
@@ -42,13 +42,13 @@
       </h3>
       <div id="userUniversesPanel" class="hidden">
         <div class="row universe-item" *ngFor="let universe of userUniverses()">
-          <button (click)="selectUniverse.emit(universe)">
+          <button (click)="onSelect(universe)">
             {{ universe.name }}
           </button>
           <p>{{ universe.description }}</p>
           <button
             type="button"
-            (click)="deleteUniverse.emit(universe.id)"
+            (click)="onDelete(universe.id)"
             [appDisableIfNotOwner]="universe.created_by"
           >
             <img
@@ -75,7 +75,7 @@
           class="row universe-item"
           *ngFor="let universe of publicUniverses()"
         >
-          <button (click)="selectUniverse.emit(universe)">
+          <button (click)="onSelect(universe)">
             {{ universe.name }}
           </button>
           <p>{{ universe.description }}</p>
@@ -90,21 +90,23 @@
             title="universe"
             placeholder="Votre nouvel univers"
             type="text"
-            [(ngModel)]="newUniverse.name"
+            [(ngModel)]="newUniverse().name"
+            (ngModelChange)="onNameChange($event)" 
           />
           <textarea
             name="universe description"
             placeholder="Description de l'univers"
-            [(ngModel)]="newUniverse.description"
+            [(ngModel)]="newUniverse().description"
+            (ngModelChange)="onDescriptionChange($event)"
           ></textarea>
           <!-- Checkbox pour choisir la visibilité -->
           <label>
-            <input type="checkbox" [(ngModel)]="newUniverse.is_public" />
+            <input type="checkbox" [(ngModel)]="newUniverse().is_public" (ngModelChange)="onPublicChange($event)" />
             Public
           </label>
           <button
             class="squishy squishy-classic"
-            (click)="createUniverse.emit()"
+            (click)="onCreate()"
           >
             Créer
           </button>
@@ -116,7 +118,7 @@
       <div *ngIf="selectedUniverse" class="selected-universe">
         <h3 class="relative">
           Univers sélectionné :
-          <i class="deselect-universe" (click)="deselectUniverse.emit()"
+          <i class="deselect-universe" (click)="onDeselect()"
             >Deselect ❌</i
           >
         </h3>

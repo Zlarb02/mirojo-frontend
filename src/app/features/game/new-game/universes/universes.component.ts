@@ -7,16 +7,17 @@ import {
   Signal,
   signal,
   SimpleChanges,
-} from '@angular/core';
-import { NavComponent } from '../../../../shared/components/nav/nav.component';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { DisableIfNotOwnerDirective } from '../../../../shared/directives/security/disable-if-not-owner.directive';
-import { CommonModule } from '@angular/common';
-import { VisibilityToggleDirective } from '../../../../shared/directives/ui/visibility-toggle.directive';
+  WritableSignal,
+} from "@angular/core";
+import { NavComponent } from "../../../../shared/components/nav/nav.component";
+import { FormsModule } from "@angular/forms";
+import { RouterLink } from "@angular/router";
+import { DisableIfNotOwnerDirective } from "../../../../shared/directives/security/disable-if-not-owner.directive";
+import { CommonModule } from "@angular/common";
+import { VisibilityToggleDirective } from "../../../../shared/directives/ui/visibility-toggle.directive";
 
 @Component({
-  selector: 'app-universes',
+  selector: "app-universes",
   standalone: true,
   imports: [
     CommonModule,
@@ -26,12 +27,16 @@ import { VisibilityToggleDirective } from '../../../../shared/directives/ui/visi
     DisableIfNotOwnerDirective,
     VisibilityToggleDirective,
   ],
-  templateUrl: './universes.component.html',
-  styleUrl: './universes.component.scss',
+  templateUrl: "./universes.component.html",
+  styleUrl: "./universes.component.scss",
 })
 export class UniversesComponent {
   @Input() selectedUniverse: any | null = null;
-  @Input() newUniverse: any = { name: '', description: '', is_public: false };
+  @Input() newUniverse: WritableSignal<{
+    name: string;
+    description: string;
+    is_public: boolean;
+  }> = signal({ name: "", description: "", is_public: false });
 
   @Input() loadMirojoUniverses!: () => void;
   @Input() loadUserUniverses!: () => void;
@@ -41,10 +46,51 @@ export class UniversesComponent {
   @Input() userUniverses: Signal<any[]> = signal([]);
   @Input() publicUniverses: Signal<any[]> = signal([]);
 
-  @Output() selectUniverse = new EventEmitter<any>();
-  @Output() deselectUniverse = new EventEmitter<void>();
-  @Output() createUniverse = new EventEmitter<any>();
-  @Output() deleteUniverse = new EventEmitter<number>();
+  @Output() selectUniverseEvent = new EventEmitter<any>();
+  @Output() deselectUniverseEvent = new EventEmitter<void>();
+  @Output() createUniverseEvent = new EventEmitter<void>();
+  @Output() deleteUniverseEvent = new EventEmitter<any>();
+
+  // Méthodes qui déclenchent l'émission des événements
+  onSelect(universe: any): void {
+    this.selectUniverseEvent.emit(universe);
+    console.log(universe.name + " emit");
+  }
+
+  onDeselect(): void {
+    this.deselectUniverseEvent.emit();
+  }
+
+  // Exemple d'une méthode pour mettre à jour le nom
+  onNameChange(newName: string): void {
+    this.newUniverse.set({
+      ...this.newUniverse(),
+      name: newName,
+    });
+  }
+
+  // Méthode pour mettre à jour la description directement dans le template
+  onDescriptionChange(newDescription: string): void {
+    this.newUniverse.set({
+      ...this.newUniverse(),
+      description: newDescription,
+    });
+  }
+
+  // Pour la checkbox, vous pouvez faire de même
+  onPublicChange(isPublic: boolean): void {
+    this.newUniverse.set({
+      ...this.newUniverse(),
+      is_public: isPublic,
+    });
+  }
+  onCreate(): void {
+    this.createUniverseEvent.emit();
+  }
+
+  onDelete(id: any): void {
+    this.deleteUniverseEvent.emit(id);
+  }
 
   toggleMirojo() {
     this.loadMirojoUniverses();
