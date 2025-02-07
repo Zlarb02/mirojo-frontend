@@ -93,14 +93,14 @@ export class UniversesComponent {
   }
 
   toggleMirojo() {
-    this.loadMirojoUniverses();
+    this.loadMirojoUniverses;
   }
 
   toggleUser() {
-    this.loadUserUniverses();
+    this.loadUserUniverses;
   }
 
   togglePublic() {
-    this.loadPublicUniverses();
+    this.loadPublicUniverses;
   }
 }

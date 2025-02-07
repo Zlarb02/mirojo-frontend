@@ -1,23 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { CommonModule } from "@angular/common";
+import { Component, inject, Input, OnInit } from "@angular/core";
+import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
+import { GameStateService } from "../../../../core/services/game-state.service";
+import { UniverseDetailsComponent } from "./universe-details/universe-details.component";
 
 @Component({
-  selector: 'app-universe',
+  selector: "app-universe",
   standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './universe.component.html',
-  styleUrl: './universe.component.scss',
+  imports: [RouterOutlet, CommonModule, UniverseDetailsComponent],
+  templateUrl: "./universe.component.html",
+  styleUrl: "./universe.component.scss",
 })
-export class UniverseComponent implements OnInit {
-  @Input() selectedUniverse: any | null = null;
-  universeId: string | null = null;
-
-  constructor(private route: ActivatedRoute) {}
-
-  ngOnInit(): void {
-    // Récupère le paramètre d'URL nommé "id"
-    this.universeId = this.route.snapshot.paramMap.get('id');
-    // Vous pouvez utiliser "universeId" pour charger des données spécifiques, etc.
-    console.log("ID de l'univers :", this.universeId);
-  }
-}
+export class UniverseComponent {}

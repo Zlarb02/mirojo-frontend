@@ -1,5 +1,6 @@
 import { Routes } from "@angular/router";
 import { WelcomeComponent } from "./features/welcome/welcome.component";
+import { NotFoundComponent } from "./layout/not-found/not-found.component";
 
 export const routes: Routes = [
   {
@@ -26,8 +27,5 @@ export const routes: Routes = [
     redirectTo: "welcome",
     pathMatch: "full",
   },
-  {
-    path: "**",
-    redirectTo: "welcome",
-  },
+  { path: "**", component: NotFoundComponent },
 ];

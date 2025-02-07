@@ -14,7 +14,6 @@ export const gameRoutes: Routes = [
         children: newGameRoutes,
       },
       { path: "", redirectTo: "new-game/universes", pathMatch: "full" },
-      { path: "**", redirectTo: "new-game/universes" },
     ],
   },
 ];

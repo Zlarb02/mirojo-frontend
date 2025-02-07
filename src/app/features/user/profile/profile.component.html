@@ -8,14 +8,14 @@
     </header>
 
     <!-- Champ : Nom d'utilisateur -->
-    <div class="user-field">
+    <div class="user-field row">
       <ng-container *ngIf="!editUsername; else editUsernameTemplate">
         <p>
           <strong>Nom d'utilisateur :</strong>
           {{ authService.currentUser()?.username || "Non défini" }}
         </p>
         <!-- Bouton avec icône de crayon pour démarrer l'édition -->
-        <button class="squishy squishy-classic" (click)="startEdit('username')">
+        <button (click)="startEdit('username')">
           ✎
         </button>
       </ng-container>
@@ -24,11 +24,11 @@
           [(ngModel)]="newUsername"
           placeholder="Nouveau nom d'utilisateur"
         />
-        <button class="squishy squishy-classic" (click)="updateUsername()">
+        <button (click)="updateUsername()">
           Modifier
         </button>
         <button
-          class="squishy squishy-classic"
+        
           (click)="cancelEdit('username')"
         >
           Annuler
@@ -37,23 +37,23 @@
     </div>
 
     <!-- Champ : Nom complet -->
-    <div class="user-field">
+    <div class="user-field row">
       <ng-container *ngIf="!editFullName; else editFullNameTemplate">
         <p>
           <strong>Nom complet :</strong>
           {{ authService.currentUser()?.full_name || "Non défini" }}
         </p>
-        <button class="squishy squishy-classic" (click)="startEdit('fullName')">
+        <button (click)="startEdit('fullName')">
           ✎
         </button>
       </ng-container>
       <ng-template #editFullNameTemplate>
         <input [(ngModel)]="newFullName" placeholder="Nom complet" />
-        <button class="squishy squishy-classic" (click)="updateFullName()">
+        <button (click)="updateFullName()">
           Modifier
         </button>
         <button
-          class="squishy squishy-classic"
+        
           (click)="cancelEdit('fullName')"
         >
           Annuler
@@ -68,47 +68,46 @@
           <strong>Site web :</strong>
           {{ authService.currentUser()?.website || "Non défini" }}
         </p>
-        <button class="squishy squishy-classic" (click)="startEdit('website')">
+        <button (click)="startEdit('website')">
           ✎
         </button>
       </ng-container>
       <ng-template #editWebsiteTemplate>
         <input [(ngModel)]="newWebsite" placeholder="Votre site web" />
-        <button class="squishy squishy-classic" (click)="updateWebsite()">
+        <button (click)="updateWebsite()">
           Modifier
         </button>
-        <button class="squishy squishy-classic" (click)="cancelEdit('website')">
+        <button (click)="cancelEdit('website')">
           Annuler
         </button>
       </ng-template>
     </div> -->
 
     <!-- Champ : URL de l'avatar -->
-    <div class="user-field">
+    <div class="user-field row">
       <ng-container *ngIf="!editAvatar; else editAvatarTemplate">
         <p>
           <strong>Avatar :</strong>
           {{ authService.currentUser()?.avatar_url || "Non défini" }}
         </p>
-        <button class="squishy squishy-classic" (click)="startEdit('avatar')">
+        <button (click)="startEdit('avatar')">
           ✎
         </button>
       </ng-container>
       <ng-template #editAvatarTemplate>
         <input [(ngModel)]="newAvatarUrl" placeholder="URL de l'avatar" />
-        <button class="squishy squishy-classic" (click)="updateAvatarUrl()">
+        <button (click)="updateAvatarUrl()">
           Modifier
         </button>
-        <button class="squishy squishy-classic" (click)="cancelEdit('avatar')">
+        <button (click)="cancelEdit('avatar')">
           Annuler
         </button>
       </ng-template>
     </div>
 
     <button
-      class="squishy squishy-cosmic"
       style="scale: 0.8; min-height: fit-content"
-      class="squishy squishy-classic"
+    
       (click)="logout()"
     >
       Se déconnecter

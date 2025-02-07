@@ -1,13 +1,29 @@
 import { Routes } from "@angular/router";
-import { UniverseComponent } from "./universe.component";
+import { UniverseDetailsComponent } from "./universe-details/universe-details.component";
+import { EnemiesComponent } from "./enemies/enemies.component";
+import { ItemsComponent } from "./items/items.component";
+import { gameStateGuard } from "../../../../core/guards/game-state.guard";
 
 export const universeRoutes: Routes = [
   {
     path: "",
-    component: UniverseComponent,
-    // Vous pouvez ajouter ici d'autres routes enfants si nécessaire, par exemple :
-    // { path: 'details', component: UniverseDetailComponent },
-    // { path: 'characters', component: UniverseCharactersComponent },
-    // { path: 'items', component: UniverseItemsComponent },
+    children: [
+      {
+        path: "details",
+        component: UniverseDetailsComponent,
+        canActivate: [gameStateGuard],
+      },
+      { path: "", redirectTo: "details", pathMatch: "full" },
+      {
+        path: "enemies",
+        component: EnemiesComponent,
+        canActivate: [gameStateGuard],
+      },
+      {
+        path: "items",
+        component: ItemsComponent,
+        canActivate: [gameStateGuard],
+      },
+    ],
   },
 ];

@@ -10,13 +10,21 @@ import {
 import { GameQueryService } from "../../../core/services/game-query.service";
 import { GameStateService } from "../../../core/services/game-state.service";
 import { AuthService } from "../../../core/services/auth.service";
-import { RouterOutlet } from "@angular/router";
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterOutlet,
+} from "@angular/router";
 import { UniversesComponent } from "./universes/universes.component";
+import { UniverseComponent } from "./universe/universe.component";
+import { filter } from "rxjs";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "app-new-game",
   standalone: true,
-  imports: [RouterOutlet, UniversesComponent],
+  imports: [RouterOutlet, UniversesComponent, UniverseComponent, CommonModule],
   templateUrl: "./new-game.component.html",
   styleUrls: ["./new-game.component.scss"],
 })
@@ -24,7 +32,8 @@ export class NewGameComponent implements OnInit {
   private queryService = inject(GameQueryService);
   private stateService = inject(GameStateService);
   private authService = inject(AuthService);
-
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   // Signal pour stocker la liste globale des univers
   universes = signal<any[]>([]);
 
@@ -55,8 +64,15 @@ export class NewGameComponent implements OnInit {
       (u) => u.created_by === "d57e74dd-a15b-4e99-b59a-b679c2c5d0ed",
     );
   });
+  currentRoute = signal("");
   ngOnInit(): void {
     this.loadUniverses();
+
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.currentRoute.set(event.url);
+      });
   }
 
   loadUniverses(): void {
