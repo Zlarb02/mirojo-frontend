@@ -150,6 +150,20 @@ a.squishy-cosmic {
     }
   }
 }
+@media screen and (max-width: 424px) {
+  .navbar {
+    .nav-links {
+      margin-right: 0%;
+    }
+  }
+}
+@media screen and (max-width: 360px) {
+  .navbar {
+    .nav-links {
+      margin-right: -5%;
+    }
+  }
+}
 //   @keyframes collapseNavbar {
 //     0% {
 //       width: 90%;

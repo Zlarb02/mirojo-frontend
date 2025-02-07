@@ -1,84 +1,14 @@
-<app-nav></app-nav>
-<div class="colored-container">
-
-    <div class="scrollable">
-        <div class="col universes">
-            <h2>Sélectionnez un univers</h2>
-
-            <!-- Univers créés par Mirojo -->
-            <h3>Univers créés par Mirojo</h3>
-            <div class="row" *ngFor="let universe of mirojoUniverses">
-                <br> <br><br>
-                <button (click)="selectUniverse(universe)">
-                    {{ universe.name }}
-                </button>
-                <p>{{ universe.description }}</p>
-                <!-- Bouton supprimer avec directive de sécurité -->
-                <button type="button" (click)="deleteUniverse(universe.id)"
-                    [appDisableIfNotOwner]="universe.created_by">
-                    <img class="delete-i" src="../../../../assets/effacer.png" alt="">
-                </button>
-                <br><br><br><br><br>
-            </div>
-
-            <!-- Univers créés par l'utilisateur connecté -->
-            <h3>Vos univers</h3>
-            <div *ngFor="let universe of userUniverses">
-                <br>
-                <button (click)="selectUniverse(universe)">
-                    {{ universe.name }}
-                </button>
-                <p>{{ universe.description }}</p>
-                <button (click)="deleteUniverse(universe.id)" [appDisableIfNotOwner]="universe.created_by">
-                    Supprimer
-                </button>
-                <br><br>
-            </div>
-
-            <!-- Section pour afficher tous les univers publics -->
-            <h3>
-                Univers publics
-                <button appVisibilityToggle="#publicUniversesPanel">Afficher/Masquer</button>
-            </h3>
-            <div id="publicUniversesPanel" class="hidden">
-                <div *ngFor="let universe of publicUniverses">
-                    <br>
-                    <button (click)="selectUniverse(universe)">
-                        {{ universe.name }}
-                    </button>
-                    <p>{{ universe.description }}</p>
-                    <button (click)="deleteUniverse(universe.id)" [appDisableIfNotOwner]="universe.created_by">
-                        Supprimer
-                    </button>
-                    <br><br>
-                </div>
-            </div>
-
-            <!-- Section pour ajouter un nouvel univers -->
-            <div class="row wrap">
-                <input title="universe" placeholder="Votre nouvel univers" type="text" [(ngModel)]="newUniverse.name">
-
-                <textarea name="universe description" placeholder="Description de l'univers"
-                    [(ngModel)]="newUniverse.description">
-              </textarea>
-
-                <!-- Checkbox pour choisir la visibilité -->
-                <label>
-                    <input type="checkbox" [(ngModel)]="newUniverse.is_public">
-                    Public
-                </label>
-
-                <button class="squishy squishy-classic" (click)="createUniverse()">
-                    Créer
-                </button>
-            </div>
-
-            <!-- Affichage de l'univers sélectionné en temps réel -->
-            <div *ngIf="selectedUniverse" class="selected-universe">
-                <h3>Univers sélectionné :</h3>
-                <p><strong>Nom :</strong> {{ selectedUniverse.name }}</p>
-                <p><strong>Description :</strong> {{ selectedUniverse.description }}</p>
-            </div>
-        </div>
-    </div>
-</div>
+<app-universes
+  [selectedUniverse]="selectedUniverse"
+  [newUniverse]="newUniverse"
+  [loadMirojoUniverses]="loadMirojoUniverses"
+  [loadUserUniverses]="loadUserUniverses"
+  [loadPublicUniverses]="loadPublicUniverses"
+  (selectUniverse)="selectUniverse($event)"
+  (deselectUniverse)="deselectUniverse()"
+  (createUniverse)="createUniverse()"
+  (deleteUniverse)="deleteUniverse($event)"
+  [mirojoUniverses]="mirojoUniverses"
+  [userUniverses]="userUniverses"
+  [publicUniverses]="publicUniverses"
+></app-universes>

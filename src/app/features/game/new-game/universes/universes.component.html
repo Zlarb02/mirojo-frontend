@@ -1,0 +1,131 @@
+<app-nav></app-nav>
+<div class="colored-container">
+  <div class="scrollable">
+    <div class="col universes">
+      <!-- <pre>Mirojo: {{ mirojoUniverses() | json }}</pre>
+      <pre>Utilisateur: {{ userUniverses() | json }}</pre>
+      <pre>Public: {{ publicUniverses() | json }}</pre> -->
+      <h1>Sélectionnez un univers</h1>
+
+      <!-- Univers créés par Mirojo -->
+      <h3 class="col">
+        Univers de bases
+        <button
+          (click)="toggleMirojo()"
+          appVisibilityToggle="#mirojoUniversesPanel"
+        >
+          Afficher/Masquer
+        </button>
+      </h3>
+      <div id="mirojoUniversesPanel" class="hidden">
+        <div
+          class="row universe-item"
+          *ngFor="let universe of mirojoUniverses()"
+        >
+          <button (click)="selectUniverse.emit(universe)">
+            {{ universe.name }}
+          </button>
+          <p>{{ universe.description }}</p>
+          <!-- Bouton supprimer avec directive de sécurité -->
+        </div>
+      </div>
+
+      <!-- Univers créés par l'utilisateur connecté -->
+      <h3 class="col">
+        Vos univers
+        <button
+          (click)="toggleUser()"
+          appVisibilityToggle="#userUniversesPanel"
+        >
+          Afficher/Masquer
+        </button>
+      </h3>
+      <div id="userUniversesPanel" class="hidden">
+        <div class="row universe-item" *ngFor="let universe of userUniverses()">
+          <button (click)="selectUniverse.emit(universe)">
+            {{ universe.name }}
+          </button>
+          <p>{{ universe.description }}</p>
+          <button
+            type="button"
+            (click)="deleteUniverse.emit(universe.id)"
+            [appDisableIfNotOwner]="universe.created_by"
+          >
+            <img
+              class="delete-i"
+              src="../../../../assets/effacer.png"
+              alt="delete"
+            />
+          </button>
+        </div>
+      </div>
+
+      <!-- Univers publics -->
+      <h3 class="col">
+        Univers publics
+        <button
+          (click)="togglePublic()"
+          appVisibilityToggle="#publicUniversesPanel"
+        >
+          Afficher/Masquer
+        </button>
+      </h3>
+      <div id="publicUniversesPanel" class="hidden">
+        <div
+          class="row universe-item"
+          *ngFor="let universe of publicUniverses()"
+        >
+          <button (click)="selectUniverse.emit(universe)">
+            {{ universe.name }}
+          </button>
+          <p>{{ universe.description }}</p>
+        </div>
+      </div>
+
+      <h1>Créer un univers</h1>
+      <!-- Section pour ajouter un nouvel univers -->
+      <div class="create-universe col text-center">
+        <div class="row wrap">
+          <input
+            title="universe"
+            placeholder="Votre nouvel univers"
+            type="text"
+            [(ngModel)]="newUniverse.name"
+          />
+          <textarea
+            name="universe description"
+            placeholder="Description de l'univers"
+            [(ngModel)]="newUniverse.description"
+          ></textarea>
+          <!-- Checkbox pour choisir la visibilité -->
+          <label>
+            <input type="checkbox" [(ngModel)]="newUniverse.is_public" />
+            Public
+          </label>
+          <button
+            class="squishy squishy-classic"
+            (click)="createUniverse.emit()"
+          >
+            Créer
+          </button>
+        </div>
+        <h2>Selectionnez un univers pour continuer</h2>
+      </div>
+
+      <!-- Affichage de l'univers sélectionné en temps réel -->
+      <div *ngIf="selectedUniverse" class="selected-universe">
+        <h3 class="relative">
+          Univers sélectionné :
+          <i class="deselect-universe" (click)="deselectUniverse.emit()"
+            >Deselect ❌</i
+          >
+        </h3>
+        <p><strong>Nom :</strong> {{ selectedUniverse.name }}</p>
+        <p><strong>Description :</strong> {{ selectedUniverse.description }}</p>
+        <a routerLink="/game/new-game/universe/{{ selectedUniverse.id }}"
+          >Continue</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
