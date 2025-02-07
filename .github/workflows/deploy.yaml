@@ -30,7 +30,11 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # ➕ Stocker le repository en minuscules dans une variable
+      - name: Set lowercase repository name
+        run: echo "GHCR_REPO=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       # 📦 Build et Push vers Docker Hub et GHCR
       - name: Build and Push Docker images
@@ -41,6 +45,6 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/mirojo-frontend:latest
-            ghcr.io/${{ github.repository_owner }}/mirojo-frontend:latest
+            ghcr.io/${{ env.GHCR_REPO }}/mirojo-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
