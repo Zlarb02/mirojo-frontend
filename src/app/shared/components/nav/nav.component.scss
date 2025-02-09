@@ -8,13 +8,18 @@
   display: flex;
   justify-content: center;
   z-index: 20;
+  &.collapsed {
+    height: 80px;
+    width: 80px;
+    margin-left: 20px;
+  }
 }
 
 .navbar {
   position: relative;
   margin: 0;
   min-height: 60px;
-  max-width: 90%;
+  max-width: 90vw;
   display: flex;
   align-self: center;
   justify-content: flex-start;
