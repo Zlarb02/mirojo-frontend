@@ -8,16 +8,16 @@ import {
   signal,
   SimpleChanges,
   WritableSignal,
-} from "@angular/core";
-import { NavComponent } from "../../../../shared/components/nav/nav.component";
-import { FormsModule } from "@angular/forms";
-import { RouterLink } from "@angular/router";
-import { DisableIfNotOwnerDirective } from "../../../../shared/directives/security/disable-if-not-owner.directive";
-import { CommonModule } from "@angular/common";
-import { VisibilityToggleDirective } from "../../../../shared/directives/ui/visibility-toggle.directive";
+} from '@angular/core';
+import { NavComponent } from '../../../../shared/components/nav/nav.component';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { DisableIfNotOwnerDirective } from '../../../../shared/directives/security/disable-if-not-owner.directive';
+import { CommonModule } from '@angular/common';
+import { VisibilityToggleDirective } from '../../../../shared/directives/ui/visibility-toggle.directive';
 
 @Component({
-  selector: "app-universes",
+  selector: 'app-universes',
   standalone: true,
   imports: [
     CommonModule,
@@ -27,8 +27,8 @@ import { VisibilityToggleDirective } from "../../../../shared/directives/ui/visi
     DisableIfNotOwnerDirective,
     VisibilityToggleDirective,
   ],
-  templateUrl: "./universes.component.html",
-  styleUrl: "./universes.component.scss",
+  templateUrl: './universes.component.html',
+  styleUrl: './universes.component.scss',
 })
 export class UniversesComponent {
   @Input() selectedUniverse: any | null = null;
@@ -36,7 +36,7 @@ export class UniversesComponent {
     name: string;
     description: string;
     is_public: boolean;
-  }> = signal({ name: "", description: "", is_public: false });
+  }> = signal({ name: '', description: '', is_public: false });
 
   @Input() loadMirojoUniverses!: () => void;
   @Input() loadUserUniverses!: () => void;
@@ -54,7 +54,7 @@ export class UniversesComponent {
   // Méthodes qui déclenchent l'émission des événements
   onSelect(universe: any): void {
     this.selectUniverseEvent.emit(universe);
-    console.log(universe.name + " emit");
+    console.log(universe.name + ' emit');
   }
 
   onDeselect(): void {
@@ -93,14 +93,14 @@ export class UniversesComponent {
   }
 
   toggleMirojo() {
-    this.loadMirojoUniverses;
+    this.loadMirojoUniverses();
   }
 
   toggleUser() {
-    this.loadUserUniverses;
+    this.loadUserUniverses();
   }
 
   togglePublic() {
-    this.loadPublicUniverses;
+    this.loadPublicUniverses();
   }
 }
