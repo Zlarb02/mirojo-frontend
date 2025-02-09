@@ -1,17 +1,17 @@
-import { HttpClient } from "@angular/common/http";
-import { Component, inject } from "@angular/core";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
-import { AuthService } from "../../../core/services/auth.service";
-import { NavComponent } from "../../../shared/components/nav/nav.component";
-import { FooterComponent } from "../../../shared/components/footer/footer.component";
+import { HttpClient } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+import { NavComponent } from '../../../shared/components/nav/nav.component';
+import { FooterComponent } from '../../../shared/components/footer/footer.component';
 
 @Component({
-  selector: "app-register",
-  templateUrl: "./register.component.html",
+  selector: 'app-register',
+  templateUrl: './register.component.html',
   standalone: true,
   imports: [ReactiveFormsModule, NavComponent, FooterComponent],
-  styleUrls: ["./register.component.css"],
+  styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
   fb = inject(FormBuilder);
@@ -20,9 +20,9 @@ export class RegisterComponent {
   authService = inject(AuthService);
 
   form = this.fb.nonNullable.group({
-    username: ["", Validators.required],
-    email: ["", Validators.required],
-    password: ["", Validators.required],
+    username: ['', Validators.required],
+    email: ['', Validators.required],
+    password: ['', Validators.required],
   });
   errorMessage: string | null = null;
 
@@ -34,7 +34,7 @@ export class RegisterComponent {
         if (result.error) {
           this.errorMessage = result.error.message;
         } else {
-          this.router.navigateByUrl("/profile");
+          this.router.navigateByUrl('user/profile');
         }
       });
   }

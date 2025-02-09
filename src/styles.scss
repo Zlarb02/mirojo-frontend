@@ -1,3 +1,5 @@
+@import "./styles/burger-juicys.scss";
+
 html,
 body {
   width: 100vw;
@@ -173,6 +175,14 @@ body {
   font-weight: 300;
 }
 
+a:active,
+a:visited,
+a:link,
+a:focus,
+a:hover {
+  color: white;
+}
+
 .overlay {
   position: absolute;
   top: 0;
@@ -186,8 +196,22 @@ body {
   color: white;
   overflow: hidden;
 }
-
+h2,
+h3,
+h4,
+h5,
+h6 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
   pointer-events: auto; /* Permet de cliquer sur le titre */
   background: linear-gradient(
     to right,
@@ -206,6 +230,11 @@ h1 {
   font-weight: 400;
   font-style: normal;
   filter: contrast(0.7) brightness(1.4);
+  button {
+    -webkit-background-clip: none;
+    background-clip: none;
+    -webkit-text-fill-color: black;
+  }
 }
 
 @keyframes animate-gradient {
@@ -387,10 +416,19 @@ form {
   filter: brightness(1.3) contrast(1.2);
 
   background-color: rgb(5 150 105);
+  box-shadow: inset 0 0.0625em 0 0 rgb(4, 130, 90),
+    0 0.0625em 0 0 rgb(4, 130, 90), 0 0.125em 0 0 rgb(3, 110, 75),
+    0 0.25em 0 0 rgb(3, 100, 70), 0 0.3125em 0 0 rgb(2, 90, 60),
+    0 0.375em 0 0 rgb(2, 80, 50), 0 0.425em 0 0 rgb(1, 70, 45),
+    0 0.425em 0 0 rgb(1, 60, 40);
 }
 
 .squishy:hover {
-  opacity: 0.85;
+  box-shadow: inset 0 0.0625em 0 0 rgb(4, 130, 90),
+    0 0.0625em 0 0 rgb(4, 130, 90), 0 0.125em 0 0 rgb(3, 110, 75),
+    0 0.25em 0 0 rgb(3, 100, 70), 0 0.3125em 0 0 rgb(2, 90, 60),
+    0 0.375em 0 0 rgb(2, 80, 50), 0 0.425em 0 0 rgb(1, 70, 45),
+    0 0.425em 0 0 rgb(1, 60, 40);
 }
 
 button {
@@ -401,15 +439,9 @@ button {
   border-radius: 0.8em;
   font-size: 1rem;
   padding: 0.5em 0.8em;
-  box-shadow:
-    inset 0 0.0625em 0 0 #c3c3c3,
-    0 0.0625em 0 0 #bfbfbf,
-    0 0.125em 0 0 #bdbdbd,
-    0 0.25em 0 0 #b3b3b3,
-    0 0.3125em 0 0 #b2b2b2,
-    0 0.375em 0 0 #b0b0b0,
-    0 0.425em 0 0 #a2a2a2,
-    0 0.425em 0 0 #a5a5a5;
+  box-shadow: inset 0 0.0625em 0 0 #c3c3c3, 0 0.0625em 0 0 #bfbfbf,
+    0 0.125em 0 0 #bdbdbd, 0 0.25em 0 0 #b3b3b3, 0 0.3125em 0 0 #b2b2b2,
+    0 0.375em 0 0 #b0b0b0, 0 0.425em 0 0 #a2a2a2, 0 0.425em 0 0 #a5a5a5;
   transition: all 0.25s ease;
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -432,15 +464,9 @@ button::before {
 button:hover,
 button:active {
   transform: translateY(0.225em);
-  box-shadow:
-    inset 0 0.03em 0 0 #c3c3c3,
-    0 0.03em 0 0 #bfbfbf,
-    0 0.0625em 0 0 #bdbdbd,
-    0 0.125em 0 0 #b3b3b3,
-    0 0.125em 0 0 #b2b2b2,
-    0 0.2em 0 0 #b0b0b0,
-    0 0.225em 0 0 #a2a2a2,
-    0 0.225em 0 0 #a5a5a5;
+  box-shadow: inset 0 0.03em 0 0 #c3c3c3, 0 0.03em 0 0 #bfbfbf,
+    0 0.0625em 0 0 #bdbdbd, 0 0.125em 0 0 #b3b3b3, 0 0.125em 0 0 #b2b2b2,
+    0 0.2em 0 0 #b0b0b0, 0 0.225em 0 0 #a2a2a2, 0 0.225em 0 0 #a5a5a5;
 }
 
 /* Éviter un glitch visuel */
@@ -466,27 +492,15 @@ button::after {
   background-color: #f0f0f0;
   color: #242424;
   border-radius: 0.5rem;
-  box-shadow:
-    inset 0 1px 0 0 #f4f4f4,
-    0 1px 0 0 #efefef,
-    0 2px 0 0 #ececec,
-    0 4px 0 0 #e0e0e0,
-    0 5px 0 0 #dedede,
-    0 6px 0 0 #dcdcdc,
-    0 7px 0 0 #cacaca,
+  box-shadow: inset 0 1px 0 0 #f4f4f4, 0 1px 0 0 #efefef, 0 2px 0 0 #ececec,
+    0 4px 0 0 #e0e0e0, 0 5px 0 0 #dedede, 0 6px 0 0 #dcdcdc, 0 7px 0 0 #cacaca,
     0 7px 8px 0 #cecece;
 }
 
 .squishy-classic:hover {
   transform: translateY(4px);
-  box-shadow:
-    inset 0 1px 0 0 #f4f4f4,
-    0 1px 0 0 #efefef,
-    0 1px 0 0 #ececec,
-    0 2px 0 0 #e0e0e0,
-    0 2px 0 0 #dedede,
-    0 3px 0 0 #dcdcdc,
-    0 4px 0 0 #cacaca,
+  box-shadow: inset 0 1px 0 0 #f4f4f4, 0 1px 0 0 #efefef, 0 1px 0 0 #ececec,
+    0 2px 0 0 #e0e0e0, 0 2px 0 0 #dedede, 0 3px 0 0 #dcdcdc, 0 4px 0 0 #cacaca,
     0 4px 6px 0 #cecece;
 }
 
@@ -495,12 +509,9 @@ button::after {
   background-color: rgb(124 58 237);
   color: white;
   border-radius: 0.5rem;
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
-    0 2px 0 0 rgb(109 40 217),
-    0 4px 0 0 rgb(91 33 182),
-    0 6px 0 0 rgb(76 29 149),
-    0 8px 0 0 rgb(67 26 131),
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+    0 2px 0 0 rgb(109 40 217), 0 4px 0 0 rgb(91 33 182),
+    0 6px 0 0 rgb(76 29 149), 0 8px 0 0 rgb(67 26 131),
     0 8px 16px 0 rgba(147, 51, 234, 0.5);
   overflow: hidden;
 }
@@ -514,12 +525,9 @@ button::after {
 
 .squishy-neon:hover {
   transform: translateY(4px);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
-    0 1px 0 0 rgb(109 40 217),
-    0 2px 0 0 rgb(91 33 182),
-    0 3px 0 0 rgb(76 29 149),
-    0 4px 0 0 rgb(67 26 131),
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+    0 1px 0 0 rgb(109 40 217), 0 2px 0 0 rgb(91 33 182),
+    0 3px 0 0 rgb(76 29 149), 0 4px 0 0 rgb(67 26 131),
     0 4px 8px 0 rgba(147, 51, 234, 0.5);
 }
 
@@ -536,23 +544,15 @@ button::after {
   );
   color: white;
   border-radius: 9999px;
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
-    0 2px 0 0 #f472b6,
-    0 4px 0 0 #f43f5e,
-    0 6px 0 0 #e11d48,
-    0 8px 0 0 #be123c,
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.4), 0 2px 0 0 #f472b6,
+    0 4px 0 0 #f43f5e, 0 6px 0 0 #e11d48, 0 8px 0 0 #be123c,
     0 8px 16px 0 rgba(244, 114, 182, 0.5);
 }
 
 .squishy-candy:hover {
   transform: translateY(4px);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
-    0 1px 0 0 #f472b6,
-    0 2px 0 0 #f43f5e,
-    0 3px 0 0 #e11d48,
-    0 4px 0 0 #be123c,
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.4), 0 1px 0 0 #f472b6,
+    0 2px 0 0 #f43f5e, 0 3px 0 0 #e11d48, 0 4px 0 0 #be123c,
     0 4px 8px 0 rgba(244, 114, 182, 0.5);
 }
 
@@ -570,12 +570,8 @@ button::after {
   );
   color: white;
   border-radius: 0.5rem;
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
-    0 2px 0 0 #312e81,
-    0 4px 0 0 #1e1b4b,
-    0 6px 0 0 #0f172a,
-    0 8px 0 0 #020617,
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.2), 0 2px 0 0 #312e81,
+    0 4px 0 0 #1e1b4b, 0 6px 0 0 #0f172a, 0 8px 0 0 #020617,
     0 8px 16px 0 rgba(49, 46, 129, 0.5);
   overflow: hidden;
 }
@@ -594,12 +590,8 @@ button::after {
 
 .squishy-cosmic:hover {
   transform: translateY(4px);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
-    0 1px 0 0 #312e81,
-    0 2px 0 0 #1e1b4b,
-    0 3px 0 0 #0f172a,
-    0 4px 0 0 #020617,
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.2), 0 1px 0 0 #312e81,
+    0 2px 0 0 #1e1b4b, 0 3px 0 0 #0f172a, 0 4px 0 0 #020617,
     0 4px 8px 0 rgba(49, 46, 129, 0.5);
 }
 
@@ -612,12 +604,8 @@ button::after {
   background-color: rgb(5 150 105);
   color: white;
   border-radius: 0.5rem;
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
-    0 2px 0 0 #059669,
-    0 4px 0 0 #047857,
-    0 6px 0 0 #065f46,
-    0 8px 0 0 #064e3b,
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.3), 0 2px 0 0 #059669,
+    0 4px 0 0 #047857, 0 6px 0 0 #065f46, 0 8px 0 0 #064e3b,
     0 8px 16px 0 rgba(5, 150, 105, 0.5);
   overflow: hidden;
 }
@@ -638,12 +626,8 @@ button::after {
 
 .squishy-tech:hover {
   transform: translateY(4px);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
-    0 1px 0 0 #059669,
-    0 2px 0 0 #047857,
-    0 3px 0 0 #065f46,
-    0 4px 0 0 #064e3b,
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.3), 0 1px 0 0 #059669,
+    0 2px 0 0 #047857, 0 3px 0 0 #065f46, 0 4px 0 0 #064e3b,
     0 4px 8px 0 rgba(5, 150, 105, 0.5);
 }
 

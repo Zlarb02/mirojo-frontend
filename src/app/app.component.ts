@@ -1,30 +1,31 @@
-import { Component, OnInit, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { RouterLink, RouterOutlet } from "@angular/router";
-import { AuthService } from "./core/services/auth.service";
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { AuthService } from './core/services/auth.service';
+import { NavComponent } from './shared/components/nav/nav.component';
 
 @Component({
-  selector: "app-root",
+  selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink],
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"],
+  imports: [CommonModule, RouterOutlet],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   authService = inject(AuthService);
   ngOnInit(): void {
     this.authService.supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") {
+      if (event === 'SIGNED_IN') {
         this.authService.currentUser.set({
           email: session?.user.email!,
           username:
-            session?.user.identities?.at(0)?.identity_data?.["username"],
-          full_name: "",
-          avatar_url: "",
-          website: "",
-          id: "",
+            session?.user.identities?.at(0)?.identity_data?.['username'],
+          full_name: '',
+          avatar_url: '',
+          website: '',
+          id: '',
         });
-      } else if (event === "SIGNED_OUT") {
+      } else if (event === 'SIGNED_OUT') {
         this.authService.currentUser.set(null);
       }
     });

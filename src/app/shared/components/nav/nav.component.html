@@ -1,8 +1,56 @@
 <div class="nav-container">
   <div class="navbar" [ngClass]="{ collapsed: isCollapsed }">
-    <button class="squishy squishy-cosmic toggle-btn" (click)="toggleNavbar()">
-      ☰
-    </button>
+    <div class="resize-menu-btn">
+      <svg class="defs">
+        <defs>
+          <filter id="gooeyness">
+            <feGaussianBlur
+              in="SourceGraphic"
+              stdDeviation="2.2"
+              result="blur"
+            />
+            <feColorMatrix
+              in="blur"
+              mode="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10"
+              result="gooeyness"
+            />
+            <feComposite in="SourceGraphic" in2="gooeyness" operator="atop" />
+          </filter>
+        </defs>
+      </svg>
+      <div class="burger-plates">
+        <div
+          class="burger-plate burger-plate5"
+          onclick="this.classList.toggle('burger-active')"
+          (click)="toggleNavbar()"
+        >
+          <svg
+            class="burger"
+            version="1.1"
+            height="100"
+            width="100"
+            viewBox="0 0 100 100"
+          >
+            <path class="burger-line burger-line1" d="M 30,35 H 70 " />
+            <path class="burger-line burger-line2" d="M 50,50 H 30 L 34,32" />
+            <path class="burger-line burger-line3" d="M 50,50 H 70 L 66,68" />
+            <path class="burger-line burger-line4" d="M 30,65 H 70 " />
+          </svg>
+          <svg
+            class="burger-x"
+            version="1.1"
+            height="100"
+            width="100"
+            viewBox="0 0 100 100"
+          >
+            <path class="burger-line" d="M 34,32 L 66,68" />
+            <path class="burger-line" d="M 66,32 L 34,68" />
+          </svg>
+        </div>
+      </div>
+      <button class="squishy squishy-cosmic toggle-btn menu-btn"></button>
+    </div>
 
     @if (authService.currentUser() === null) {
     <div class="nav-links">
@@ -21,5 +69,15 @@
       >
     </div>
     }
+    <button
+      class="squishy squishy-cosmic toggle-btn fullscreen-btn"
+      (click)="toggleFullscreen()"
+    >
+      <img
+        class="fullscreen-i"
+        src="../../../../assets/fullscreen.png"
+        alt=""
+      />
+    </button>
   </div>
 </div>

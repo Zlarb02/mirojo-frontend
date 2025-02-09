@@ -13,7 +13,7 @@
 .navbar {
   position: relative;
   margin: 0;
-  height: 60px;
+  min-height: 60px;
   max-width: 90%;
   display: flex;
   align-self: center;
@@ -45,6 +45,7 @@
 
   &.collapsed {
     width: 22px;
+    height: 62px;
     overflow: hidden;
     margin-right: auto;
     margin-left: 3.3%;
@@ -54,6 +55,9 @@
       opacity: 0;
       transition: all 0s;
       margin-left: 30px;
+    }
+    .fullscreen-btn {
+      display: none;
     }
   }
 }
@@ -109,17 +113,30 @@
 .navbar .toggle-btn {
   position: absolute;
   font-size: 25px;
-  margin-left: -12px;
+  margin-left: -10px;
   margin-top: -8px;
 
   cursor: pointer;
   color: white;
 }
 
+.fullscreen-btn {
+  display: flex;
+  position: absolute;
+  right: 20px;
+  color: white;
+  filter: brightness(0.95);
+}
+
+.fullscreen-i {
+  margin: -7px;
+  transform: scale(0.65);
+}
+
 .nav-links {
   margin: auto;
   display: flex;
-  margin-top: 10px;
+  margin-top: 6px;
 }
 a.squishy-cosmic {
   padding: 0.4rem 1.1rem;
@@ -135,6 +152,35 @@ a.squishy-cosmic {
 .squishy-cosmic:hover {
   opacity: 0.65;
 }
+
+.resize-menu-btn {
+  transform: scale(0.5);
+  margin-top: -35px;
+  .burger-plates {
+    z-index: 2;
+    width: 100px;
+    height: 100px;
+  }
+  .burger-line {
+    stroke: white;
+  }
+  button {
+    z-index: 1;
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+  }
+  .menu-btn {
+    margin: -17px -27px;
+  }
+  .burger-plates:hover + .menu-btn {
+    transform: translateY(4px);
+  }
+  .burger-plates:hover {
+    transform: translateY(4px);
+  }
+}
+
 @media screen and (max-width: 790px) {
   .navbar {
     max-width: 80%;
@@ -146,108 +192,103 @@ a.squishy-cosmic {
       margin-right: auto;
     }
 
+    .nav-links {
+      margin-top: 10px;
+    }
+
     a {
       font-size: medium;
     }
   }
 }
+// vertical nav
+
 @media screen and (max-width: 424px) {
+  .nav-container {
+    height: 100vh;
+    width: 50%;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
   .navbar {
+    align-self: flex-start;
+    margin-left: 2vw;
+    margin-top: 2vh;
+    max-width: 70%;
+    max-height: 90vh;
+    flex-direction: column;
     .nav-links {
-      margin-right: 0%;
+      display: flex;
+      flex-direction: column;
+      margin: 20px;
+      gap: 20px;
+    }
+    .toggle-btn {
+      position: relative;
+      margin: 10px;
+      margin-bottom: 20px;
+      align-self: flex-start;
+    }
+    .fullscreen-btn {
+      display: flex;
+      align-self: flex-end;
+    }
+    &.collapsed {
+      height: 50px;
+      .nav-links {
+        display: none;
+      }
+      .toggle-btn {
+        position: absolute;
+        margin-left: -10px;
+        margin-top: 7px;
+      }
+      .burger-plates {
+        margin: 25px 17px;
+      }
+
+      .resize-menu-btn {
+        margin-top: 0px;
+        margin-left: -40px;
+      }
+    }
+  }
+
+  .resize-menu-btn {
+    transform: scale(0.5);
+    margin-top: -10px;
+    margin-left: -30vw;
+    .burger-plates {
+      position: absolute;
+      z-index: 2;
+      width: 100px;
+      height: 100px;
+    }
+    .burger-line {
+      stroke: white;
+    }
+    button {
+      z-index: 1;
+      width: 100px;
+      height: 100px;
+      border-radius: 20px;
+    }
+    .menu-btn {
+      margin: -17px -27px;
+    }
+    .burger-plates:hover + .menu-btn {
+      transform: translateY(4px);
+    }
+    .burger-plates:hover {
+      transform: translateY(4px);
     }
   }
 }
-@media screen and (max-width: 360px) {
-  .navbar {
-    .nav-links {
-      margin-right: -5%;
-    }
-  }
-}
-//   @keyframes collapseNavbar {
-//     0% {
-//       width: 90%;
-//       left: 2.5%;
-//     }
-//     100% {
-//       width: 22px;
-//       left: 85%;
-//     }
-//   }
 
-//   @keyframes expandNavbar {
-//     0% {
-//       width: 22px;
-//       left: 85%;
-//     }
-//     100% {
-//       width: 90%;
-//       left: 2.5%;
-//     }
-//   }
-// }
-
-// @media screen and (max-width: 600px) {
+// @media screen and (max-width: 360px) {
 //   .navbar {
-//     max-width: 87%;
-//     right: 2.5%;
-//     &.collapsed {
-//       left: 85%;
-//     }
-//   }
-
-//   @keyframes collapseNavbar {
-//     0% {
-//       width: 90%;
-//       left: 2.5%;
-//     }
-//     100% {
-//       width: 22px;
-//       left: 85%;
-//     }
-//   }
-
-//   @keyframes expandNavbar {
-//     0% {
-//       width: 22px;
-//       left: 85%;
-//     }
-//     100% {
-//       width: 90%;
-//       left: 2.5%;
-//     }
-//   }
-// }
-
-// @media screen and (max-width: 500px) {
-//   .navbar {
-//     max-width: 85%;
-//     right: 2.5%;
-//     &.collapsed {
-//       left: 85%;
-//     }
-//   }
-
-//   @keyframes collapseNavbar {
-//     0% {
-//       width: 90%;
-//       left: 2.5%;
-//     }
-//     100% {
-//       width: 22px;
-//       left: 85%;
-//     }
-//   }
-
-//   @keyframes expandNavbar {
-//     0% {
-//       width: 22px;
-//       left: 85%;
-//     }
-//     100% {
-//       width: 90%;
-//       left: 2.5%;
+//     .nav-links {
+//       margin-right: -5%;
 //     }
 //   }
 // }

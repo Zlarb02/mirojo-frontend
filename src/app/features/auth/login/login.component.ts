@@ -1,17 +1,17 @@
-import { HttpClient } from "@angular/common/http";
-import { Component, inject } from "@angular/core";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
-import { AuthService } from "../../../core/services/auth.service";
-import { NavComponent } from "../../../shared/components/nav/nav.component";
-import { FooterComponent } from "../../../shared/components/footer/footer.component";
+import { HttpClient } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+import { NavComponent } from '../../../shared/components/nav/nav.component';
+import { FooterComponent } from '../../../shared/components/footer/footer.component';
 
 @Component({
-  selector: "app-login",
-  templateUrl: "./login.component.html",
+  selector: 'app-login',
+  templateUrl: './login.component.html',
   standalone: true,
   imports: [ReactiveFormsModule, NavComponent, FooterComponent],
-  styleUrl: "./login.component.css",
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   fb = inject(FormBuilder);
@@ -20,8 +20,8 @@ export class LoginComponent {
   authService = inject(AuthService);
 
   form = this.fb.nonNullable.group({
-    email: ["", Validators.required],
-    password: ["", Validators.required],
+    email: ['', Validators.required],
+    password: ['', Validators.required],
   });
   errorMessage: string | null = null;
 
@@ -33,7 +33,7 @@ export class LoginComponent {
         if (result.error) {
           this.errorMessage = result.error.message;
         } else {
-          this.router.navigateByUrl("/profile");
+          this.router.navigateByUrl('user/profile');
         }
       });
   }
