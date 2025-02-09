@@ -4,13 +4,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { NavComponent } from '../../../shared/components/nav/nav.component';
-import { FooterComponent } from '../../../shared/components/footer/footer.component';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   standalone: true,
-  imports: [ReactiveFormsModule, NavComponent, FooterComponent],
+  imports: [ReactiveFormsModule, NavComponent],
   styleUrl: './login.component.css',
 })
 export class LoginComponent {

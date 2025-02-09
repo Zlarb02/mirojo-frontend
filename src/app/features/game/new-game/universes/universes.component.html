@@ -5,9 +5,10 @@
       <!-- <pre>Mirojo: {{ mirojoUniverses() | json }}</pre>
       <pre>Utilisateur: {{ userUniverses() | json }}</pre>
       <pre>Public: {{ publicUniverses() | json }}</pre> -->
+      <h1>✨ Univers 🪐</h1>
       <section class="select-universe">
-        <h1>
-          Sélectionnez un univers
+        <h2>
+          🎯 Sélectionnez un univers
           <div class="resize-display-btn">
             <svg class="defs">
               <defs>
@@ -65,11 +66,11 @@
             </div>
             <button class="display-btn"></button>
           </div>
-        </h1>
+        </h2>
         <div class="hidden" id="select-universe">
           <!-- Univers créés par Mirojo -->
           <h3>
-            Univers de bases
+            📦 Univers de bases 📦
             <div class="resize-display-btn">
               <svg class="defs">
                 <defs>
@@ -143,7 +144,7 @@
           </div>
           <!-- Univers créés par l'utilisateur connecté -->
           <h3>
-            Vos univers
+            🗂️ Vos univers 🗂️
             <div class="resize-display-btn">
               <svg class="defs">
                 <defs>
@@ -227,7 +228,7 @@
           </div>
           <!-- Univers publics -->
           <h3>
-            Univers publics
+            🌏 Univers publics 🌏
             <div class="resize-display-btn">
               <svg class="defs">
                 <defs>
@@ -302,8 +303,8 @@
       </section>
 
       <section class="create-universe">
-        <h1>
-          Ou créez en un nouveau
+        <h2>
+          🛠️ Ou créez en un nouveau
           <div class="resize-display-btn">
             <svg class="defs">
               <defs>
@@ -361,10 +362,10 @@
             </div>
             <button class="display-btn"></button>
           </div>
-        </h1>
+        </h2>
         <!-- Section pour ajouter un nouvel univers -->
         <div class="col text-center hidden" id="create-universe">
-          <div class="row wrap">
+          <div class="col wrap">
             <input
               title="universe"
               placeholder="Votre nouvel univers"
@@ -387,9 +388,9 @@
               />
               Public
             </label>
-            <button (click)="onCreate()">Créer</button>
+            <button class="create-btn" (click)="onCreate()">Créer</button>
           </div>
-          <h2>Selectionnez un univers pour continuer</h2>
+          <h4>Selectionnez un univers pour continuer</h4>
         </div>
       </section>
 

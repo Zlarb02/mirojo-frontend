@@ -15,24 +15,15 @@
           {{ authService.currentUser()?.username || "Non défini" }}
         </p>
         <!-- Bouton avec icône de crayon pour démarrer l'édition -->
-        <button (click)="startEdit('username')">
-          ✎
-        </button>
+        <button (click)="startEdit('username')">✎</button>
       </ng-container>
       <ng-template #editUsernameTemplate>
         <input
           [(ngModel)]="newUsername"
           placeholder="Nouveau nom d'utilisateur"
         />
-        <button (click)="updateUsername()">
-          Modifier
-        </button>
-        <button
-        
-          (click)="cancelEdit('username')"
-        >
-          Annuler
-        </button>
+        <button (click)="updateUsername()">Modifier</button>
+        <button (click)="cancelEdit('username')">Annuler</button>
       </ng-template>
     </div>
 
@@ -43,21 +34,12 @@
           <strong>Nom complet :</strong>
           {{ authService.currentUser()?.full_name || "Non défini" }}
         </p>
-        <button (click)="startEdit('fullName')">
-          ✎
-        </button>
+        <button (click)="startEdit('fullName')">✎</button>
       </ng-container>
       <ng-template #editFullNameTemplate>
         <input [(ngModel)]="newFullName" placeholder="Nom complet" />
-        <button (click)="updateFullName()">
-          Modifier
-        </button>
-        <button
-        
-          (click)="cancelEdit('fullName')"
-        >
-          Annuler
-        </button>
+        <button (click)="updateFullName()">Modifier</button>
+        <button (click)="cancelEdit('fullName')">Annuler</button>
       </ng-template>
     </div>
 
@@ -90,29 +72,17 @@
           <strong>Avatar :</strong>
           {{ authService.currentUser()?.avatar_url || "Non défini" }}
         </p>
-        <button (click)="startEdit('avatar')">
-          ✎
-        </button>
+        <button (click)="startEdit('avatar')">✎</button>
       </ng-container>
       <ng-template #editAvatarTemplate>
         <input [(ngModel)]="newAvatarUrl" placeholder="URL de l'avatar" />
-        <button (click)="updateAvatarUrl()">
-          Modifier
-        </button>
-        <button (click)="cancelEdit('avatar')">
-          Annuler
-        </button>
+        <button (click)="updateAvatarUrl()">Modifier</button>
+        <button (click)="cancelEdit('avatar')">Annuler</button>
       </ng-template>
     </div>
 
-    <button
-      style="scale: 0.8; min-height: fit-content"
-    
-      (click)="logout()"
-    >
+    <button style="scale: 1.4; min-height: fit-content" (click)="logout()">
       Se déconnecter
     </button>
-
-    <app-footer></app-footer>
   </div>
 </div>

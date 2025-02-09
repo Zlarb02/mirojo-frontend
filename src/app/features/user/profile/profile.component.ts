@@ -2,20 +2,13 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FooterComponent } from '../../../shared/components/footer/footer.component';
 import { AuthService } from '../../../core/services/auth.service';
 import { NavComponent } from '../../../shared/components/nav/nav.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FooterComponent,
-    NavComponent,
-    FormsModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, NavComponent, FormsModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
 })
