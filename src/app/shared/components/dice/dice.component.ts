@@ -51,17 +51,18 @@ import { Color } from "three";
         </label>
       </section> 
     </section>
-    <button id="score">
-      Score :
-      @if (topFaceNumber) {
-        {{ this.topFaceNumber }}
-      }
-    </button>
-    <span>{{this.resultMessage}}</span>
+    <section class="row end">
+      <span id="score">
+        Score :
+        @if (topFaceNumber) {
+          {{ this.topFaceNumber }}
+         {{this.resultMessage}} }</span>
+      <button id="resetButton" (click)="resetScene()">Réinitialiser le dé</button>
+    </section>
     <div id="canvasContainer"></div>
-    <button id="resetButton" (click)="resetScene()">Relancer le dé</button>
 
-    <button id="fpsCounter"></button>`,
+    <button id="fpsCounter"></button>
+    <footer></footer>`,
   styles: [
     `
       :host {
@@ -75,20 +76,19 @@ import { Color } from "three";
         height: 100%;
       }
 
-      section, span   {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin:auto;
-        margin-top: 40px;
-        margin-bottom: 20px;
-        max-width:90vw;
-        text-align: center;
-        justify-content: center;
+      section{
+        padding:2rem;
+        max-width: 90%;
+        span, button{
+          margin:0;
+          min-width: 150px
+        };
       }
 
-      label{
+      section.end{
+        margin-bottom:-50px;
       }
+
 
       input{padding:0;
       border-radius: 5px;}
@@ -107,10 +107,9 @@ import { Color } from "three";
       #resetButton {
         z-index: 10;
         margin: auto;
-        margin-top: -40px;
-        margin-bottom: 80px;
         display: flex;
-        scale: 2;
+        scale: 1;
+
       }
       #fpsCounter {
         position: absolute;
@@ -125,13 +124,13 @@ import { Color } from "three";
         z-index: 10;
       }
       #score {
-        scale: 2;
+        scale: 1;
         display: flex;
-        margin: auto;
       }
       #score:hover {
         transform: scale(1.1);
       }
+      footer{margin-top:10vh; width:2px; height:2px;}
     `,
   ],
 })

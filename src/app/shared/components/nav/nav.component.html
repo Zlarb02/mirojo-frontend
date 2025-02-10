@@ -54,6 +54,7 @@
 
     @if (authService.currentUser() === null) {
     <div class="nav-links">
+      <a class="squishy squishy-cosmic" routerLink="/">Accueil</a>
       <a class="squishy squishy-cosmic" routerLink="/auth/login"
         >Se connecter</a
       >
@@ -63,6 +64,7 @@
     </div>
     } @if (authService.currentUser()) {
     <div class="nav-links">
+      <a class="squishy squishy-cosmic" routerLink="/">Accueil</a>
       <a class="squishy squishy-cosmic" routerLink="/user/profile">Profil</a>
       <a class="squishy squishy-cosmic" routerLink="/game/new-game"
         >Nouveau jeu</a
