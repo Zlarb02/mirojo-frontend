@@ -9,17 +9,18 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 @Component({
   standalone: true,
   selector: 'app-dice',
   template: `<div id="canvasContainer"></div>
-    <button id="resetButton" (click)="resetDice()">
-      Réinitialiser le dé
-    </button> `,
+
+    <button id="resetButton" (click)="resetScene()">Relancer le dé</button>
+    <button id="score">
+      Score : @if(topFaceNumber){{{ this.topFaceNumber }}}
+    </button>
+
+    <button id="fpsCounter"></button>`,
   styles: [
     `
       :host {
@@ -42,11 +43,35 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
         touch-action: none;
         border-radius: 20px;
         overflow: hidden;
+        border: 2px solid rgba(29, 44, 41, 0.49);
       }
       #resetButton {
+        z-index: 10;
         margin: auto;
-        margin-top: 20px;
+        margin-top: -40px;
+        margin-bottom: 80px;
         display: flex;
+        scale: 2;
+      }
+      #fpsCounter {
+        position: absolute;
+        display: none;
+        top: 10px;
+        right: 10px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 5px 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        z-index: 10;
+      }
+      #score {
+        scale: 2;
+        display: flex;
+        margin: auto;
+      }
+      #score:hover {
+        transform: scale(1.1);
       }
     `,
   ],
@@ -72,7 +97,20 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
   private targetPosition: CANNON.Vec3 | null = null;
   private initialPosition: CANNON.Vec3 | null = null;
 
-  private composer!: EffectComposer;
+  private hasDiceBeenLaunched = false; // Indique si le dé a été lancé
+
+  private lastTime: number = 0;
+
+  private fpsInterval: number = 1000 / 60; // Limite à 60 FPS
+  private then: number = 0;
+
+  private diceFaceNumbers: number[] = [
+    10, 8, 20, 2, 12, 15, 7, 17, 16, 3, 1, 19, 6, 9, 13, 11, 14, 4, 5, 18,
+  ];
+  private fpsDisplay!: HTMLElement;
+  private frameCount: number = 0;
+  private fps: number = 0;
+  public topFaceNumber: number | null = null;
   private lerp(start: number, end: number, alpha: number): number {
     return start + (end - start) * alpha; // Interpolation linéaire
   }
@@ -135,6 +173,8 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
     this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(this.renderer.domElement);
+    this.renderer.setClearColor(0xfffff0, 0.1); // Fond transparent
+    this.renderer.setPixelRatio(window.devicePixelRatio / 2); // Divise par deux
 
     // Créer la scène
     this.scene = new THREE.Scene();
@@ -148,13 +188,13 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
     );
     this.camera.position.set(0, 7, 10);
     this.camera.lookAt(0, -5, 0);
+    this.camera.layers.enable(1); // Activer la couche 1 pour la caméra
 
     this.raycaster = new THREE.Raycaster();
 
     // Configurer le monde physique
     this.world = new CANNON.World();
     this.world.gravity.set(0, -9.82, 0);
-
     this.configureMaterials();
 
     // Ajouter un sol physique
@@ -173,18 +213,42 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
     this.addLights();
 
     // Initialiser les contrôles OrbitControls
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = true; // Ajoute une inertie fluide lors du mouvement
-    this.controls.dampingFactor = 0.1; // Facteur de l'inertie
-    this.controls.minDistance = 5; // Distance de zoom minimale
-    this.controls.maxDistance = 15; // Réduisez la distance de dézoom maximale
-    this.controls.enablePan = false; // Désactiver les déplacements latéraux
-
+    this.addControls();
     // Ajouter les écouteurs pour les interactions utilisateur
     this.addInteractionListeners(container);
 
-    const animate = () => {
-      this.world.step(1 / 60);
+    this.startAnimation();
+
+    // Gérer le redimensionnement
+    window.addEventListener('resize', () => {
+      this.camera.aspect = container.clientWidth / container.clientHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+  }
+  private startAnimation(): void {
+    // Obtenez une référence à l'élément HTML pour afficher les FPS
+    this.fpsDisplay = document.getElementById('fpsCounter')!;
+
+    let lastUpdateTime = performance.now();
+
+    const animate = (now: number) => {
+      const deltaTime = (now - this.lastTime) / 1000; // Temps écoulé entre les frames en secondes
+      this.lastTime = now;
+
+      // Comptez les frames pour le calcul des FPS
+      this.frameCount++;
+      if (now - lastUpdateTime >= 1000) {
+        this.fps = this.frameCount; // FPS calculé
+        this.frameCount = 0; // Réinitialisez le compteur de frames
+        lastUpdateTime = now;
+
+        // Affichez les FPS
+        this.fpsDisplay.innerText = `${this.fps} FPS`;
+      }
+
+      // Mise à jour du monde physique avec un intervalle fixe (1 / 60)
+      this.world.step(1 / 30, deltaTime, 4);
 
       // Si une position cible existe et que le dé est sélectionné
       if (this.targetPosition && this.selectedObject) {
@@ -207,85 +271,228 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
         this.diceMesh.position.copy(this.diceBody.position as any);
         this.diceMesh.quaternion.copy(this.diceBody.quaternion as any);
       }
+
+      // === Détection : dé lancé et immobile ===
+      if (
+        !this.isDragging &&
+        this.hasDiceBeenLaunched &&
+        this.isDiceStopped()
+      ) {
+        this.moveCameraToTopView(); // Déplacer la caméra au-dessus du dé
+        return; // Arrêter la boucle pour éviter de multiples appels
+      }
+
       // Mettre à jour les contrôles uniquement si l'utilisateur ne manipule pas le dé
       if (!this.isDragging) {
         this.controls.update();
       }
 
-      // === Camera Collision Detection ===
-      const minCameraHeight = 2; // La hauteur minimale autorisée pour la caméra
-      if (this.camera.position.y < minCameraHeight) {
-        // Remontez la caméra si elle est trop basse
-        this.camera.position.y = minCameraHeight;
-
-        // Optionnel : recentrer légèrement la caméra
-        const center = new THREE.Vector3(0, 0, 0);
-        this.camera.lookAt(center);
-        this.controls.target.copy(center);
-      }
-
-      // === Dice Collision Detection ===
-      if (this.diceBody && this.diceMesh) {
-        const bounds = 15; // Taille de la limite autour de la scène
-        if (
-          Math.abs(this.diceBody.position.x) > bounds ||
-          Math.abs(this.diceBody.position.z) > bounds ||
-          this.diceBody.position.y < -10
-        ) {
-          this.resetDice(); // Réinitialiser le dé s'il sort des limites
-        }
-      }
       // Rendu de la scène
       this.renderer.render(this.scene, this.camera);
       this.animationFrameId = requestAnimationFrame(animate);
     };
 
-    animate();
+    animate(this.lastTime);
+  }
 
-    this.addBloomEffect();
-    this.animateWithBloom();
+  private addControls(): void {
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableDamping = true; // Ajoute une inertie fluide lors du mouvement
+    this.controls.dampingFactor = 0.1; // Facteur de l'inertie
+    this.controls.minDistance = 5; // Distance de zoom minimale
+    this.controls.maxDistance = 15; // Distance de zoom maximale
+    this.controls.enablePan = true; // Permettre la translation
 
-    // Gérer le redimensionnement
-    window.addEventListener('resize', () => {
-      this.camera.aspect = container.clientWidth / container.clientHeight;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(container.clientWidth, container.clientHeight);
+    // Limites pour les déplacements latéraux (en fonction des dimensions de la scène)
+    const bounds = {
+      minX: -15, // Limite gauche
+      maxX: 15, // Limite droite
+      minZ: -15, // Limite avant
+      maxZ: 15, // Limite arrière
+      minY: 2, // Hauteur minimale
+      maxY: 17, // Hauteur maximale
+    };
+
+    // Restreindre les déplacements latéraux uniquement lorsque le dé n'est pas manipulé
+    this.controls.addEventListener('change', () => {
+      if (!this.isDragging) {
+        const target = this.controls.target;
+
+        // Limiter le target des contrôles
+        target.x = Math.max(bounds.minX, Math.min(bounds.maxX, target.x));
+        target.y = Math.max(bounds.minY, Math.min(bounds.maxY, target.y));
+        target.z = Math.max(bounds.minZ, Math.min(bounds.maxZ, target.z));
+
+        // Facultatif : Limiter également la position de la caméra
+        const position = this.camera.position;
+        position.x = Math.max(bounds.minX, Math.min(bounds.maxX, position.x));
+        position.y = Math.max(bounds.minY, Math.min(bounds.maxY, position.y));
+        position.z = Math.max(bounds.minZ, Math.min(bounds.maxZ, position.z));
+      }
     });
   }
 
-  private addBloomEffect(): void {
-    const renderPass = new RenderPass(this.scene, this.camera);
-    const bloomPass = new UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
-      2,
-      0.8,
-      1.2
+  private getTopFace(): number | null {
+    if (!this.diceMesh || !this.diceMesh.geometry) return null;
+
+    // Récupérer la géométrie et les faces du dé
+    const geometry = new THREE.IcosahedronGeometry(1.2);
+    const positionAttribute = geometry.attributes.position;
+    const worldQuaternion = this.diceMesh.getWorldQuaternion(
+      new THREE.Quaternion()
     );
-    bloomPass.threshold = 0.1; // Plus petit seuil pour inclure plus d'objets
-    bloomPass.strength = 2.0; // Augmentez la force du bloom
-    bloomPass.radius = 0.5; // Ajustez pour obtenir un effet plus diffus
 
-    this.composer = new EffectComposer(this.renderer);
-    this.composer.addPass(renderPass);
-    this.composer.addPass(bloomPass);
-  }
+    let maxDot = -Infinity;
+    let topFaceIndex = -1;
 
-  private animateWithBloom = () => {
-    this.world.step(1 / 60);
+    // Parcourir chaque face en utilisant les sommets (3 sommets par face)
+    const faceCount = positionAttribute.count / 3;
+    for (let i = 0; i < faceCount; i++) {
+      // Obtenir les trois sommets de la face
+      const vA = new THREE.Vector3().fromBufferAttribute(
+        positionAttribute,
+        i * 3
+      );
+      const vB = new THREE.Vector3().fromBufferAttribute(
+        positionAttribute,
+        i * 3 + 1
+      );
+      const vC = new THREE.Vector3().fromBufferAttribute(
+        positionAttribute,
+        i * 3 + 2
+      );
 
-    if (this.diceBody && this.diceMesh) {
-      this.diceMesh.position.copy(this.diceBody.position as any);
-      this.diceMesh.quaternion.copy(this.diceBody.quaternion as any);
+      // Calculer la normale de la face dans l'espace local
+      const normal = new THREE.Vector3()
+        .subVectors(vB, vA)
+        .cross(new THREE.Vector3().subVectors(vC, vA))
+        .normalize();
+
+      // Transformer la normale en espace monde
+      normal.applyQuaternion(worldQuaternion);
+
+      // Calculer le produit scalaire avec la direction "haut" (0, 1, 0)
+      const dot = normal.dot(new THREE.Vector3(0, 1, 0));
+
+      // Si cette face est plus proche de "haut", on met à jour
+      if (dot > maxDot) {
+        maxDot = dot;
+        topFaceIndex = i;
+      }
     }
 
-    if (!this.isDragging) {
+    // Vérifier si un index valide a été trouvé
+    if (topFaceIndex !== -1 && topFaceIndex < this.diceFaceNumbers.length) {
+      return this.diceFaceNumbers[topFaceIndex];
+    }
+
+    return null; // Aucune face valide trouvée
+  }
+
+  private isDiceStopped(): boolean {
+    const linearVelocity = this.diceBody.velocity.length(); // Vitesse linéaire
+    const angularVelocity = this.diceBody.angularVelocity.length(); // Vitesse angulaire
+
+    // Si la vitesse est inférieure à un seuil, le dé est considéré comme immobile
+    const threshold = 0.01;
+    return linearVelocity < threshold && angularVelocity < threshold;
+  }
+
+  private moveCameraToTopView(): void {
+    const targetPosition = this.diceBody.position; // Position finale du dé
+
+    // Désactiver les contrôles
+    this.controls.enabled = false;
+
+    // Définir les positions de départ et de fin
+    const startPosition = this.camera.position.clone();
+    const endPosition = new THREE.Vector3(
+      targetPosition.x, // Position X du dé
+      targetPosition.y + 8, // Au-dessus du dé (10 unités en hauteur)
+      targetPosition.z // Position Z du dé
+    );
+    const lookAtTarget = new THREE.Vector3(
+      targetPosition.x,
+      targetPosition.y,
+      targetPosition.z
+    );
+
+    // Variables pour l'animation
+    let progress = 0;
+    const duration = 2; // Durée de l'animation en secondes
+
+    const animateCamera = () => {
+      // Incrémentez le progrès
+      progress += 1 / 30; // 1 frame à 60 FPS
+      const alpha = Math.min(progress / duration, 1); // Normaliser entre 0 et 1
+
+      // Interpolation linéaire de la position de la caméra
+      this.camera.position.lerpVectors(startPosition, endPosition, alpha);
+
+      // Faire regarder la caméra vers le dé
+      this.camera.lookAt(lookAtTarget);
+
+      // Rendre la scène après chaque mise à jour
+      this.renderer.render(this.scene, this.camera);
+
+      // Continuez tant que l'animation n'est pas terminée
+      if (alpha < 1) {
+        requestAnimationFrame(animateCamera);
+      } else {
+        console.log('Animation terminée, caméra au-dessus du dé.');
+        this.topFaceNumber = this.getTopFace();
+      }
+    };
+
+    animateCamera();
+  }
+
+  resetScene(): void {
+    // Annuler l'animation en cours
+    cancelAnimationFrame(this.animationFrameId);
+
+    this.topFaceNumber = null; // Réinitialiser le numéro de la face
+    // Supprimer tous les objets de la scène
+    while (this.scene.children.length > 0) {
+      const object = this.scene.children[0];
+      this.scene.remove(object);
+    }
+
+    // Supprimer tous les objets physiques
+    while (this.world.bodies.length > 0) {
+      this.world.removeBody(this.world.bodies[0]);
+    }
+
+    // Réinitialiser les variables de contrôle
+    this.hasDiceBeenLaunched = false;
+    this.isDragging = false;
+    this.selectedObject = null;
+    this.targetPosition = null;
+    this.initialPosition = null;
+
+    // Réinitialiser la caméra
+    this.camera.position.set(0, 7, 10);
+    this.camera.lookAt(0, 0, 0);
+
+    // Réinitialiser les contrôles
+    if (this.controls) {
+      this.controls.target.set(0, 0, 0);
       this.controls.update();
     }
 
-    // Render avec l'effet bloom
-    this.composer.render();
-    requestAnimationFrame(this.animateWithBloom);
-  };
+    // Réinitialiser les matériaux
+    this.configureMaterials();
+
+    // Recréer les éléments de la scène
+    this.addGround();
+    this.addWalls();
+    this.addCeiling();
+    this.addDice();
+    this.addLights();
+
+    // Relancer l'animation
+    this.startAnimation();
+  }
 
   resetDice(): void {
     if (this.diceBody && this.diceMesh) {
@@ -352,7 +559,7 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
     const edgeMaterial = new THREE.LineBasicMaterial({
       color: 0x00ffcc,
       transparent: true,
-      opacity: 0.3, // Opacité pour les arêtes
+      opacity: 0, // Opacité pour les arêtes
     });
     const groundWireframe = new THREE.LineSegments(groundEdges, edgeMaterial);
 
@@ -363,7 +570,7 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
     const groundMaterial = new THREE.MeshBasicMaterial({
       color: 0x00ffcc,
       transparent: true,
-      opacity: 0.07, // Opacité pour la surface
+      opacity: 0,
       side: THREE.DoubleSide,
     });
     const groundSurface = new THREE.Mesh(
@@ -371,6 +578,8 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
       groundMaterial
     );
     groundSurface.rotation.x = -Math.PI / 2; // Aligner avec le sol
+    groundSurface.visible = false; // Cacher la surface
+    groundSurface.layers.set(2); // Layer 2 pour les murs
     this.scene.add(groundSurface);
   }
 
@@ -386,14 +595,14 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
     const edgeMaterial = new THREE.LineBasicMaterial({
       color: 0x00ffcc,
       transparent: true,
-      opacity: 0.3, // Opacité des arêtes
+      opacity: 0, // Opacité des arêtes
     });
 
     // Couleur des surfaces opaques
     const wallSurfaceMaterial = new THREE.MeshBasicMaterial({
       color: 0x00ffcc,
       transparent: true,
-      opacity: 0.07, // Opacité des murs
+      opacity: 0,
       side: THREE.DoubleSide,
     });
 
@@ -446,6 +655,8 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
       );
       wallSurface.position.set(...(position as [number, number, number]));
       wallSurface.rotation.set(...(rotation as [number, number, number]));
+      wallSurface.visible = false; // Cacher la surface
+      wallSurface.layers.set(2); // Layer 2 pour les murs
       this.scene.add(wallSurface);
     });
   }
@@ -469,7 +680,7 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
     const edgeMaterial = new THREE.LineBasicMaterial({
       color: 0x00ffcc,
       transparent: true,
-      opacity: 0.3, // Opacité des arêtes
+      opacity: 0, // Opacité des arêtes
     });
     const ceilingWireframe = new THREE.LineSegments(ceilingEdges, edgeMaterial);
 
@@ -481,7 +692,7 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
     const ceilingMaterial = new THREE.MeshBasicMaterial({
       color: 0x00ffcc,
       transparent: true,
-      opacity: 0.07, // Opacité de la surface
+      opacity: 0,
       side: THREE.DoubleSide,
     });
     const ceilingSurface = new THREE.Mesh(
@@ -490,6 +701,8 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
     );
     ceilingSurface.rotation.x = Math.PI / 2; // Aligner avec le plafond
     ceilingSurface.position.y = wallHeight; // Aligner en hauteur
+    ceilingSurface.visible = false; // Cacher la surface
+    ceilingSurface.layers.set(2); // Layer 2 pour les murs
     this.scene.add(ceilingSurface);
   }
 
@@ -516,7 +729,7 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
         }
 
         // Utiliser la géométrie du GLTF pour copier les UVs
-        const diceGeometry = new THREE.IcosahedronGeometry(1.4);
+        const diceGeometry = new THREE.IcosahedronGeometry(1.2);
         diceGeometry.attributes.uv = gltfMesh.geometry.attributes.uv; // Copier les UVs
 
         // Utiliser le matériau du GLTF
@@ -524,7 +737,6 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
 
         this.diceMesh = new THREE.Mesh(diceGeometry, diceMaterial);
         this.diceMesh.layers.set(1); // Assigner la couche 1
-        this.camera.layers.enable(1); // Activer la couche 1 pour la caméra
 
         this.scene.add(this.diceMesh);
 
@@ -548,25 +760,25 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
 
   private addLights(): void {
     // Lumière ambiante (illumination uniforme de la scène)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2);
     this.scene.add(ambientLight);
 
     // Lumière directionnelle principale
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Intensité augmentée
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2.6); // Intensité augmentée
     directionalLight.position.set(5, 10, 5);
     this.scene.add(directionalLight);
 
     // Ajout d'un projecteur directement sur le dé
-    const spotLight = new THREE.SpotLight(0xffffff, 2); // Intensité forte
-    spotLight.position.set(0, 10, 0); // Directement au-dessus du dé
-    spotLight.angle = Math.PI / 6; // Concentrez la lumière sur une petite zone
-    spotLight.penumbra = 0.5; // Ajouter un léger flou
+    const spotLight = new THREE.SpotLight(0xffffff, 3); // Intensité forte
+    spotLight.position.set(-5, 10, -5); // Directement au-dessus du dé
+    spotLight.angle = Math.PI / 3; // Concentrez la lumière sur une petite zone
+    spotLight.penumbra = 0.2; // Ajouter un léger flou
     spotLight.decay = 2; // Réduire l'intensité avec la distance
-    spotLight.distance = 30; // Limite de la portée
+    spotLight.distance = 130; // Limite de la portée
     this.scene.add(spotLight);
 
     // Ajout d'un deuxième projecteur
-    const spotLight2 = new THREE.SpotLight(0xffffff, 1.5);
+    const spotLight2 = new THREE.SpotLight(0xffffff, 3.5);
     spotLight2.position.set(-10, 5, 10); // Position décalée
     spotLight2.angle = Math.PI / 4;
     this.scene.add(spotLight2);
@@ -592,12 +804,33 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
 
   private applyExtraForce(): void {
     if (this.diceBody) {
-      // Direction et force
-      const force = new CANNON.Vec3(1, 2, 0.5); // Force dans la direction X, Y et Z
-      const relativePoint = new CANNON.Vec3(1, 0, 0); // Point d'application de la force (centre)
+      // Force linéaire : direction et intensité
+      const force = new CANNON.Vec3(
+        (Math.random() - 0.5) * 10, // Force aléatoire sur X
+        Math.random() * 20 + 10, // Force positive sur Y pour lever le dé
+        (Math.random() - 0.5) * 10 // Force aléatoire sur Z
+      );
+      const relativePoint = new CANNON.Vec3(0, 0, 0); // Point d'application de la force (centre)
 
-      // Appliquer la force
+      // Appliquer la force linéaire
       this.diceBody.applyForce(force, relativePoint);
+
+      // === Calculer l'intensité de la force ===
+      const forceMagnitude = force.length(); // Magnitude de la force appliquée
+
+      // === Définir une rotation proportionnelle à la force ===
+      const rotationFactor = forceMagnitude * 0.5; // Ajustez le facteur de rotation
+      const angularVelocity = new CANNON.Vec3(
+        (Math.random() - 0.5) * rotationFactor, // Vélocité de rotation proportionnelle sur X
+        (Math.random() - 0.5) * rotationFactor, // Vélocité de rotation proportionnelle sur Y
+        (Math.random() - 0.5) * rotationFactor // Vélocité de rotation proportionnelle sur Z
+      );
+
+      // Appliquer la vélocité angulaire
+      this.diceBody.angularVelocity.copy(angularVelocity);
+
+      // Marquer le dé comme lancé
+      this.hasDiceBeenLaunched = true;
     }
   }
 
@@ -690,8 +923,8 @@ export class DiceComponent implements AfterViewInit, OnDestroy {
       this.initialPosition = null; // Réinitialiser la position initiale
     }
 
-    this.isDragging = false; // Désactiver le mode "drag"
-    this.controls.enabled = true; // Réactiver les contrôles après l'interaction
+    this.isDragging = false; // Réactiver les limitations après manipulation
+    this.controls.enabled = true; // Réactiver OrbitControls après l'interaction
     this.diceBody.mass = 0.2; // Réactiver la gravité
     this.diceBody.updateMassProperties();
   }
