@@ -23,6 +23,7 @@
     "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@angular/ssr": "^18.2.0",
+    "@n8n/chat": "^0.27.1",
     "@supabase/supabase-js": "^2.48.1",
     "cannon-es": "^0.20.0",
     "express": "^4.19.2",

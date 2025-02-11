@@ -1,31 +1,31 @@
-import { Routes } from "@angular/router";
-import { WelcomeComponent } from "./features/welcome/welcome.component";
-import { NotFoundComponent } from "./layout/not-found/not-found.component";
+import { Routes } from '@angular/router';
+import { WelcomeComponent } from './features/welcome/welcome.component';
+import { NotFoundComponent } from './layout/not-found/not-found.component';
 
 export const routes: Routes = [
   {
-    path: "auth",
+    path: 'auth',
     loadChildren: () =>
-      import("./features/auth/auth.routes").then((m) => m.authRoutes),
+      import('./features/auth/auth.routes').then((m) => m.authRoutes),
   },
   {
-    path: "game",
+    path: 'game',
     loadChildren: () =>
-      import("./features/game/game.routes").then((m) => m.gameRoutes),
+      import('./features/game/game.routes').then((m) => m.gameRoutes),
   },
   {
-    path: "user",
+    path: 'user',
     loadChildren: () =>
-      import("./features/user/user.routes").then((m) => m.userRoutes),
+      import('./features/user/user.routes').then((m) => m.userRoutes),
   },
   {
-    path: "welcome",
+    path: 'welcome',
     component: WelcomeComponent,
   },
   {
-    path: "",
-    redirectTo: "welcome",
-    pathMatch: "full",
+    path: '',
+    redirectTo: 'welcome',
+    pathMatch: 'full',
   },
-  { path: "**", component: NotFoundComponent },
+  { path: '**', component: NotFoundComponent },
 ];
