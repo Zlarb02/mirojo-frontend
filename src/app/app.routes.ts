@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { WelcomeComponent } from './features/welcome/welcome.component';
 import { NotFoundComponent } from './layout/not-found/not-found.component';
+import { ChatComponent } from './features/chat/chat.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,10 @@ export const routes: Routes = [
   {
     path: 'welcome',
     component: WelcomeComponent,
+  },
+  {
+    path: 'chat',
+    component: ChatComponent,
   },
   {
     path: '',

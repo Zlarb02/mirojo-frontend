@@ -48,30 +48,15 @@
       href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
-    <link
-      href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css"
-      rel="stylesheet"
-    />
   </head>
   <body>
     <app-root></app-root>
-    <!-- commentaire mis a jour : 29 janv 23:40 -->
-    <script type="module">
-      import { createChat } from "@n8n/chat";
-
-      createChat({
-        webhookUrl:
-          "https://n8n-n9mx.onrender.com/webhook/f406671e-c954-4691-b39a-66c90aa2f103/chat",
-        initialMessages: [
-          "Coucou ! 👋",
-          "Des questions à propos de Mirojo.app?",
-        ],
-        chatInputKey: "chatInput",
-        chatSessionKey: "sessionId",
-        metadata: {},
-        showWelcomeScreen: false,
-        defaultLanguage: "fr",
-      });
+    <script>
+      window.__VUE_OPTIONS_API__ = true;
+      window.__VUE_PROD_DEVTOOLS__ = false;
     </script>
+
+    <!-- commentaire mis a jour : 29 janv 23:40 -->
+    
   </body>
 </html>

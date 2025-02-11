@@ -6,6 +6,6 @@
     "typeRoots": ["node_modules/@types", "src/typings"],
     "types": ["node"]
   },
-  "files": ["src/main.ts", "src/main.server.ts", "server.ts"],
+  "files": ["src/main.ts"],
   "include": ["src/**/*.d.ts"]
 }

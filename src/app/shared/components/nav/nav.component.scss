@@ -1,4 +1,4 @@
-@import "../../../../styles.scss";
+$tiffany-blue: #0abab5;
 
 .nav-container {
   position: absolute;
@@ -45,7 +45,7 @@
 
   button:hover,
   .btn:hover {
-    color: lighten($color: $tiffany-blue, $amount: 15);
+    color:  $tiffany-blue;;
   }
 
   &.collapsed {

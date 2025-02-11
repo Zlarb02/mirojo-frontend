@@ -1,4 +1,7 @@
-@import "./styles/burger-juicys.scss";
+@use "./styles/burger-juicys.scss";
+
+@use './styles/chat/style.scss';
+@use './styles/chat/custom.scss';
 
 html,
 body {
