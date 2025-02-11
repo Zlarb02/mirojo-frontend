@@ -25,7 +25,7 @@ RUN rm -rf node_modules
 FROM nginx:stable
 
 # Copier les fichiers construits depuis la phase de build vers Nginx
-COPY --from=build-stage /app/dist/mirojo-frontend/browser /usr/share/nginx/html
+COPY --from=build-stage /app/dist/mirojo-frontend /usr/share/nginx/html
 
 # Copier le fichier de configuration Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
