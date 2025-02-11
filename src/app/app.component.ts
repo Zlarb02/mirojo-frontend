@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
 import { NavComponent } from './shared/components/nav/nav.component';
+import { ChatComponent } from './features/chat/chat.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, ChatComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
